@@ -21,20 +21,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.planetcinema.PlaneCinemaScreen
 import com.example.planetcinema.R
 
+val items = listOf(
+    R.drawable.lottery,
+    R.drawable.swipe,
+    R.drawable.list
+)
 
 @Composable
-fun NavBar(orientation : Int, selectedIndex : Int = 0) { //mb to view model
+fun NavBar(selectedItem: Int, orientation : Int, navController: NavController) { //mb to view model
     //NAVBAR
     val navbarSize = if (orientation == Configuration.ORIENTATION_PORTRAIT) 1f else 0.6f
     val navbarClip = if (orientation == Configuration.ORIENTATION_PORTRAIT) 0.dp else 20.dp
-    var selectedItem by remember { mutableIntStateOf(selectedIndex) } // go to view
-    val items = listOf(
-        R.drawable.lottery,
-        R.drawable.swipe,
-        R.drawable.list
-    )
+
 
     Column(
         modifier = Modifier
@@ -54,7 +56,9 @@ fun NavBar(orientation : Int, selectedIndex : Int = 0) { //mb to view model
                         modifier = Modifier.fillMaxSize(0.5f),
                         tint = Color.White) },
                     selected = selectedItem == index,
-                    onClick = { selectedItem = index}
+                    onClick = {
+                        navController.navigate(PlaneCinemaScreen.entries[index].name)
+                    }
                 )
             }
         }

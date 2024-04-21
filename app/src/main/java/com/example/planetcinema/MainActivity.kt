@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                   UserListPanel()
+                    PlanetCinemaApp()
                    // WheelPanel()
                     // SwapPanel()
                 }
@@ -35,6 +35,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     PlanetCinemaTheme (darkTheme = true) {
-        UserListPanel()
+        PlanetCinemaApp()
     }
 }

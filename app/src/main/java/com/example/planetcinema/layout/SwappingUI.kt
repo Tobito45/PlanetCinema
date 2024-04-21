@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.example.planetcinema.R
 
 
+
 @Composable
 fun SwappingCard(orientation : Int, filmName : String, filmAutor : String, filmMark : String) {
     if(orientation == Configuration.ORIENTATION_PORTRAIT) {
