@@ -1,8 +1,8 @@
 package com.example.planetcinema.layout
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,15 +21,21 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.planetcinema.R
+import com.lyh.spintest.SpinWheelComponent
+import com.lyh.spintest.SpinWheelItem
+import com.lyh.spintest.rememberSpinWheelState
+import kotlinx.collections.immutable.toPersistentList
+import kotlin.random.Random
 
 @Composable
 fun WheelCard(orientation : Int) {
@@ -51,19 +57,24 @@ private fun WheelCardPortarait() {
             .fillMaxSize()) {
         Spacer(modifier =
         Modifier.fillMaxHeight(0.15f))
-        Image(
+        /*Image(
             painter = painterResource(id = R.drawable.wheel),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxHeight(0.6f)
                 .fillMaxWidth()
-        )
+        )*/
+        Wheel(modifier = Modifier
+            .fillMaxHeight(0.5f)
+            .fillMaxWidth())
+
         Spacer(modifier =
         Modifier.fillMaxHeight(0.25f))
         Row (
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier
+                .fillMaxHeight()
                 .fillMaxWidth(0.8f)) {
 
             WheelButton("Add movie", Icons.Filled.Add)
@@ -86,7 +97,8 @@ private fun WheelCardLandScape() {
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier
+                .fillMaxHeight()
                 .fillMaxWidth(0.4f)) {
 
             WheelButton("Add movie", Icons.Filled.Add, Modifier.padding(20.dp))
@@ -94,13 +106,16 @@ private fun WheelCardLandScape() {
         }
         Spacer(modifier =
         Modifier.fillMaxHeight(0.25f))
-        Image(
+        Wheel(modifier = Modifier
+            .fillMaxHeight(0.5f)
+            .fillMaxWidth())
+        /*Image(
             painter = painterResource(id = R.drawable.wheel),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxHeight(0.5f)
                 .fillMaxWidth()
-        )
+        )*/
     }
 
 }
@@ -132,6 +147,53 @@ private fun WheelButton(textButton : String, buttonIcon : ImageVector, modifier:
                 tint = Color.White,
                 contentDescription = null
             )
+        }
+    }
+}
+
+@Composable
+fun Wheel(modifier: Modifier) {
+    val colors1 = remember {
+        listOf(Color.Red, Color.Red)
+    }
+    val colors2 = remember {
+        listOf(Color.Yellow, Color.Yellow)
+    }
+
+    val items = remember {
+        List(10) { index ->
+            val colors = if (index % 2 == 0) colors1 else colors2
+
+            SpinWheelItem(colors = colors.toPersistentList()) {
+                Text(
+                    text = "$$index",
+                    style = TextStyle(color = Color(0xFF4CAF50), fontSize = 20.sp)
+                )
+            }
+        }.toPersistentList()
+    }
+
+    val spinState = rememberSpinWheelState(
+        items = items,
+        backgroundImage = R.drawable.spin_wheel_background,
+        centerImage = R.drawable.spin_wheel_center,
+        indicatorImage = R.drawable.spin_wheel_tick,
+        onSpinningFinished = null,
+    )
+    Box(modifier = modifier) {
+        SpinWheelComponent(spinState)
+        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Button(
+                onClick = { spinState.launchInfinite() },
+            ) {
+                Text(text = "Krut")
+
+            }
+            Button(
+                onClick = { spinState.stoppingWheel(Random.nextInt(0, items.count())) },
+            ) {
+                Text(text = "Stope")
+            }
         }
     }
 }
