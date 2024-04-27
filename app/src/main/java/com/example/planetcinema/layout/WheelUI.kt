@@ -22,8 +22,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
@@ -35,6 +37,8 @@ import com.lyh.spintest.SpinWheelComponent
 import com.lyh.spintest.SpinWheelItem
 import com.lyh.spintest.rememberSpinWheelState
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 @Composable
@@ -89,7 +93,8 @@ private fun WheelCardLandScape() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center  ,
         modifier = Modifier
-            .fillMaxSize()) {
+            .fillMaxSize()
+    ) {
         Spacer(modifier =
         Modifier.fillMaxHeight(0.25f))
 
@@ -104,11 +109,10 @@ private fun WheelCardLandScape() {
             WheelButton("Add movie", Icons.Filled.Add, Modifier.padding(20.dp))
             WheelButton("Clear", Icons.Filled.Delete)
         }
-        Spacer(modifier =
-        Modifier.fillMaxHeight(0.25f))
         Wheel(modifier = Modifier
             .fillMaxHeight(0.5f)
-            .fillMaxWidth())
+            .fillMaxWidth(0.5f).padding(bottom = 100.dp))
+
         /*Image(
             painter = painterResource(id = R.drawable.wheel),
             contentDescription = null,
@@ -161,7 +165,7 @@ fun Wheel(modifier: Modifier) {
     }
 
     val items = remember {
-        List(10) { index ->
+        List(1) { index ->
             val colors = if (index % 2 == 0) colors1 else colors2
 
             SpinWheelItem(colors = colors.toPersistentList()) {
@@ -175,25 +179,29 @@ fun Wheel(modifier: Modifier) {
 
     val spinState = rememberSpinWheelState(
         items = items,
-        backgroundImage = R.drawable.spin_wheel_background,
-        centerImage = R.drawable.spin_wheel_center,
+        backgroundImage = R.drawable.empty,
+        centerImage = R.drawable.empty,
         indicatorImage = R.drawable.spin_wheel_tick,
         onSpinningFinished = null,
     )
+
+    val coroutineScope = rememberCoroutineScope()
+
     Box(modifier = modifier) {
         SpinWheelComponent(spinState)
-        Row(horizontalArrangement = Arrangement.SpaceBetween) {
-            Button(
-                onClick = { spinState.launchInfinite() },
-            ) {
-                Text(text = "Krut")
-
-            }
-            Button(
-                onClick = { spinState.stoppingWheel(Random.nextInt(0, items.count())) },
-            ) {
-                Text(text = "Stope")
-            }
-        }
+        Button(
+            onClick = {
+                coroutineScope.launch {
+                    spinState.launchInfinite()
+                    delay(2000)
+                    spinState.stoppingWheel(Random.nextInt(0, items.count()))
+                }
+            },
+            modifier = Modifier.fillMaxSize().alpha(0f),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+                disabledContentColor = Color.Transparent
+                ),
+        ) {}
     }
 }
