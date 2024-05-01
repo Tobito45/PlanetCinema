@@ -14,6 +14,8 @@ lifecycleViewmodelCompose = "2.6.1"
 navigationRuntimeKtx = "2.7.7"
 navigationCompose = "2.7.7"
 numberpicker = "1.0.3"
+swipe = "1.0.0"
+swipeVersion = "1.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,6 +42,8 @@ androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navig
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 numberpicker = { module = "com.chargemap.compose:numberpicker", version.ref = "numberpicker" }
+swipe = { module = "me.saket.swipe:swipe", version.ref = "swipe" }
+swipe-v130 = { module = "me.saket.swipe:swipe", version.ref = "swipeVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

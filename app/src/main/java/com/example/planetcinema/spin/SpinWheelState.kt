@@ -12,8 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.example.planetcinema.getDegreeFromSection
-import com.example.planetcinema.getDegreeFromSectionWithRandom
+import com.example.planetcinema.spin.getDegreeFromSection
+import com.example.planetcinema.spin.getDegreeFromSectionWithRandom
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

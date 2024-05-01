@@ -1,31 +1,34 @@
 package com.example.planetcinema
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.planetcinema.layout.SwappingCard
 import com.example.planetcinema.ui.theme.PlanetCinemaTheme
-import com.lyh.spintest.SpinWheelComponent
-import com.lyh.spintest.SpinWheelItem
-import com.lyh.spintest.rememberSpinWheelState
-import kotlinx.collections.immutable.toPersistentList
-import kotlin.random.Random
+import me.saket.swipe.SwipeAction
+import me.saket.swipe.SwipeableActionsBox
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,10 +37,9 @@ class MainActivity : ComponentActivity() {
             PlanetCinemaTheme (darkTheme = true) {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    //modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
-                ) {
-                  //  Test2()
+               ) {
                     PlanetCinemaApp()
                    // WheelPanel()
                     // SwapPanel()
@@ -57,63 +59,88 @@ fun GreetingPreview() {
 }
 
 @Composable
-fun Test2() {
-    val colors1 = remember {
-        listOf(Color.Red, Color.Red)
-    }
-    val colors2 = remember {
-        listOf(Color.Yellow, Color.Yellow)
-    }
+fun Test1() {
 
-    val items = remember {
-        List(10) { index ->
-            val colors = if (index % 2 == 0) colors1 else colors2
+        // Creating a Column Layout
+        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
 
-            SpinWheelItem(colors = colors.toPersistentList()) {
-                Text(
-                    text = "$$index",
-                    style = TextStyle(color = Color(0xFF4CAF50), fontSize = 20.sp)
-                )
+            // Fetching local context
+            val mLocalContext = LocalContext.current
+
+            // Creating a Swipe Action for Calling;
+            // setting icon, background and what
+            // happens when swiped
+            val mCall = SwipeAction(
+                icon = painterResource(R.drawable.empty),
+                background = Color.Green,
+                isUndo = true,
+                onSwipe = { Toast.makeText(mLocalContext, "Calling",Toast.LENGTH_SHORT).show()}
+            )
+
+            // Creating a Swipe Action for Sending a message;
+            // setting icon, background and what happens when swiped
+            val mMessage = SwipeAction(
+                icon = painterResource(R.drawable.empty),
+                background = Color.Yellow,
+                isUndo = true,
+                onSwipe = { Toast.makeText(mLocalContext, "Sending Message",Toast.LENGTH_SHORT).show()}
+            )
+
+            // Creating a Swipe Action Box with start
+            // action as calling and end action as sending message
+            SwipeableActionsBox(
+                startActions = listOf(mCall),
+                endActions = listOf(mMessage)) {
+
+                // Creating a Button inside Swipe Action Box
+                Button(onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0XFF0F9D58))
+                ) {
+                    Text(text = "Swipe Left or Right", fontSize = 25.sp, color = Color.White)
+                }
             }
-        }.toPersistentList()
-    }
-    val spinState = rememberSpinWheelState(
-        items = items,
-        backgroundImage = R.drawable.spin_wheel_background,
-        centerImage = R.drawable.spin_wheel_center,
-        indicatorImage = R.drawable.spin_wheel_tick,
-        onSpinningFinished = null,
+        }
+}
+
+@Composable
+fun Test2() {
+    val orientation = LocalConfiguration.current.orientation
+    val archive = SwipeAction(
+        onSwipe = {
+            Log.d("MainActivity", "Archive")
+        },
+        icon = {
+            Icon(
+                painter = painterResource(id = R.drawable.empty),
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.padding(16.dp),
+            )
+        },
+        background = Color.Green
     )
-    Box(modifier = Modifier.size(300.dp)) {
-        SpinWheelComponent(spinState)
-        Row(horizontalArrangement = Arrangement.SpaceBetween) {
-        Button(onClick = { spinState.launchInfinite() },
-        //    modifier = Modifier.size(100.dp)
-        ) {
-            Text(text = "Krut")
 
-        }
-        Button(onClick = { spinState.stoppingWheel( Random.nextInt(0, items.count()) ) },
-        //    modifier = Modifier.size(100.dp)
-        ) {
-            Text(text = "Stope")
-        }
-        }
+    val email = SwipeAction(
+        onSwipe = {
+            Log.d("MainActivity", "Email")
+        },
+        icon = {
+            Icon(
+                painter = painterResource(id = R.drawable.empty),
+                contentDescription = null,
+                tint = Color.White,
+
+                modifier = Modifier.padding(16.dp),
+            )
+        },
+        background = Color.Blue
+    )
+
+    SwipeableActionsBox(
+        swipeThreshold = 100.dp,
+        startActions = listOf(archive),
+        endActions = listOf(email),
+    ) {
+        SwappingCard(orientation, "The Hunger Games", "Gary Ross", "7.8")
     }
-}
-
-
-fun getDegreeFromSection(items: List<SpinWheelItem>, section: Int): Float {
-    val pieDegree = 360f / items.size
-    return pieDegree * section.times(-1)
-}
-
-fun getDegreeFromSectionWithRandom(items: List<SpinWheelItem>, section: Int): Float {
-    val pieDegree = 360f / items.size
-    val exactDegree = pieDegree * section.times(-1)
-
-    val pieReduced = pieDegree * 0.9f //to avoid stop near border
-    val multiplier = if (Random.nextBoolean()) 1f else -1f //before or after exact degree
-    val randomDegrees = Random.nextDouble(0.0, pieReduced / 2.0)
-    return exactDegree + (randomDegrees.toFloat() * multiplier)
 }
