@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.planetcinema.data.FilmCreator
 import com.example.planetcinema.layout.Header
 import com.example.planetcinema.layout.NavBar
 import com.example.planetcinema.layout.SquareBackgroundHeader
@@ -52,10 +53,11 @@ fun SwapScreen(
     navController: NavHostController,
 ) {
     val orientation = LocalConfiguration.current.orientation
+    val randomFilm = FilmCreator.GetRandom();
 
     SquareBackgroundHeader(orientation, 0);
     Header("Discover");
-    SwappingCard(orientation, "The Hunger Games", "Gary Ross", "7.8")
+    SwappingCard(orientation, randomFilm.name, randomFilm.autor, randomFilm.mark.toString())
     NavBar(selectedItem, orientation, navController)
 }
 

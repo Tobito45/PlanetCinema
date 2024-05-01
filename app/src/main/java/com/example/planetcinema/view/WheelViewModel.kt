@@ -1,6 +1,7 @@
 package com.example.planetcinema.view
 
 import androidx.lifecycle.ViewModel
+import com.example.planetcinema.data.FilmCreator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -8,7 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlin.random.Random
 
 class WheelViewModel : ViewModel()  {
-    private val randomFilmsList : List<String> = listOf("Screem", "Wallken dead", "The hunger name", "Star wars", "Dasha lox 2")
+    //private val randomFilmsList : List<String> = listOf("Screem", "Wallken dead", "The hunger name", "Star wars", "Dasha lox 2")
     private val _uiState = MutableStateFlow(WheelUiState())
 
     val uiState: StateFlow<WheelUiState> = _uiState.asStateFlow()
@@ -29,7 +30,7 @@ class WheelViewModel : ViewModel()  {
     fun addFilm(filmsOld : List<String>) {
         _uiState.update { currentState ->
             currentState.copy(
-                films = filmsOld + randomFilmsList[Random.nextInt(0, randomFilmsList.size)]
+                films = filmsOld + FilmCreator.GetRandom().name
             )
         }
     }
