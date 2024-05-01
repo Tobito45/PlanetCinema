@@ -1,7 +1,6 @@
 package com.example.planetcinema.layout
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,22 +21,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.planetcinema.R
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import com.example.planetcinema.data.Film
+import com.example.planetcinema.view.UserListViewModel
+import kotlin.math.ceil
 
 
 @Composable
-fun UserListCard(orientation: Int) {
+fun UserListCard(orientation: Int,
+                 viewModel: UserListViewModel = viewModel()
+) {
     if(orientation == Configuration.ORIENTATION_PORTRAIT) {
-        UserListScrollPortrait()
+        UserListScrollPortrait(viewModel.getAllFilms())
     } else {
-        UserListScrollLandscape()
+        UserListScrollLandscape(viewModel.getAllFilms())
     }
 }
 
 @Composable
-private fun UserListScrollPortrait() {
+private fun UserListScrollPortrait(films : List<Film>) {
     Column {
         Spacer(
             modifier =
@@ -51,11 +55,12 @@ private fun UserListScrollPortrait() {
                 .fillMaxWidth()
                 .fillMaxHeight(0.88f)
         ) {
-            items(100) { index ->
+            items(films.size) { index ->
                 UserListElement(
-                    filmName = "The Hunger Games",
-                    filmAutor = "Gary Ross",
-                    filmMark = "7.8",
+                    filmName = films[index].name,
+                    filmAutor = films[index].autor,
+                    filmMark = films[index].mark.toString(),
+                    filmUrl = films[index].url,
                     Modifier
                         .fillMaxWidth(0.9f)
                         .height(170.dp)
@@ -78,7 +83,7 @@ private fun UserListScrollPortrait() {
 
 
 @Composable
-private fun UserListScrollLandscape() {
+private fun UserListScrollLandscape(films : List<Film>) {
     Column {
         Spacer(
             modifier =
@@ -93,12 +98,13 @@ private fun UserListScrollLandscape() {
                 .fillMaxHeight(0.7f)
                 .padding(horizontal = 20.dp)
         ) {
-            items(100) { index ->
-                Row {
+            items(ceil(films.size.toFloat() / 2.0f).toInt()) { index ->
+               Row {
                     UserListElement(
-                        filmName = "The Hunger Games",
-                        filmAutor = "Gary Ross",
-                        filmMark = "7.8",
+                        filmName = films[index].name,
+                        filmAutor = films[index].autor,
+                        filmMark = films[index].mark.toString(),
+                        filmUrl = films[index].url,
                         Modifier
                             .fillMaxWidth(0.5f)
                             .height(100.dp)
@@ -113,25 +119,28 @@ private fun UserListScrollLandscape() {
                             .fillMaxSize(0.85f)
                             .padding(top = 2.dp)
                     )
-
-                    UserListElement(
-                        filmName = "The Hunger Games",
-                        filmAutor = "Gary Ross",
-                        filmMark = "7.8",
-                        generalModifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp)
-                            .padding(top = 20.dp, start = 10.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color(0xFF3E3F3F)),
-                        imageModifier = Modifier
-                            .fillMaxWidth(0.3f)
-                            .padding(10.dp),
-                        smallTextModifier = Modifier.padding(top = 2.dp),
-                        markRowModifier = Modifier
-                            .fillMaxSize(0.85f)
-                            .padding(top = 2.dp)
-                    )
+                   val secondIndex = films.size - 1 - index
+                    if (secondIndex != index) {
+                        UserListElement(
+                            filmName = films[secondIndex].name,
+                            filmAutor = films[secondIndex].autor,
+                            filmMark = films[secondIndex].mark.toString(),
+                            filmUrl = films[secondIndex].url,
+                            generalModifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                                .padding(top = 20.dp, start = 10.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color(0xFF3E3F3F)),
+                            imageModifier = Modifier
+                                .fillMaxWidth(0.3f)
+                                .padding(10.dp),
+                            smallTextModifier = Modifier.padding(top = 2.dp),
+                            markRowModifier = Modifier
+                                .fillMaxSize(0.85f)
+                                .padding(top = 2.dp)
+                        )
+                    }
                 }
             }
         }
@@ -142,6 +151,7 @@ private fun UserListScrollLandscape() {
 fun UserListElement(filmName : String,
                     filmAutor : String,
                     filmMark : String,
+                    filmUrl : String,
                     generalModifier : Modifier,
                     imageModifier : Modifier,
                     smallTextModifier : Modifier,
@@ -150,12 +160,18 @@ fun UserListElement(filmName : String,
     Row(
         modifier = generalModifier
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.the_hunger_games_movie_poster),
+        AsyncImage(
+            model = filmUrl,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = imageModifier
         )
+        /*Image(
+            painter = painterResource(id = R.drawable.the_hunger_games_movie_poster),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = imageModifier
+        )*/
 
         Column (
             verticalArrangement = Arrangement.Center,

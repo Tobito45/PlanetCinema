@@ -7,6 +7,8 @@ import com.example.planetcinema.R
 import me.saket.swipe.SwipeAction
 
 fun CreateSwipeAction(OnSwipe : () -> Unit, background : Color) : SwipeAction {
+    val backgroundWithAlpha = background.copy(alpha = 0.25f)
+
     return  SwipeAction(
         onSwipe = OnSwipe,
         icon = {
@@ -15,6 +17,8 @@ fun CreateSwipeAction(OnSwipe : () -> Unit, background : Color) : SwipeAction {
                 contentDescription = null,
             )
         },
-        background = background
+        isUndo = true,
+        weight = 2.0,
+        background = backgroundWithAlpha
     )
 }

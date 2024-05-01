@@ -75,6 +75,8 @@ dependencies {
 
     implementation(libs.swipe.v130)
 
+    implementation(libs.coil.compose.v240)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

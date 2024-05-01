@@ -2,7 +2,6 @@ package com.example.planetcinema.layout
 
 import android.content.res.Configuration
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.planetcinema.R
 import com.example.planetcinema.swipe.CreateSwipeAction
 import com.example.planetcinema.view.SwapViewModel
@@ -44,6 +44,7 @@ fun SwappingCard(orientation : Int, filmName : String,
         SwappingCardPortrait(uiState.actualFilm.name,
                              uiState.actualFilm.autor,
                              uiState.actualFilm.mark.toString(),
+                             uiState.actualFilm.url,
                              { viewModel.generateNewFilm() },
                              { viewModel.generateNewFilm() }
         )
@@ -51,6 +52,7 @@ fun SwappingCard(orientation : Int, filmName : String,
         SwappingCardLandScape(uiState.actualFilm.name,
                               uiState.actualFilm.autor,
                               uiState.actualFilm.mark.toString(),
+                              uiState.actualFilm.url,
                               { viewModel.generateNewFilm() },
                               { viewModel.generateNewFilm() }
         )
@@ -61,6 +63,7 @@ fun SwappingCard(orientation : Int, filmName : String,
 private fun SwappingCardLandScape(filmName : String,
                                   filmAutor : String,
                                   filmMark : String,
+                                  filmUrl : String,
                                   OnSwapRight : () -> Unit,
                                   OnSwapLeft : () -> Unit) {
     Row(
@@ -75,14 +78,14 @@ private fun SwappingCardLandScape(filmName : String,
                 OnSwapLeft()
                 Toast.makeText(mLocalContext, "Left", Toast.LENGTH_SHORT).show()
             },
-            background = Color.Green
+            background = Color(0xFF006400)
         )
         val right = CreateSwipeAction(
             OnSwipe = {
                 OnSwapRight()
                 Toast.makeText(mLocalContext, "Right", Toast.LENGTH_SHORT).show()
             },
-            background = Color.Red
+            background = Color(0xFF640000)
         )
 
         Icon(
@@ -98,6 +101,7 @@ private fun SwappingCardLandScape(filmName : String,
             swipeThreshold = 100.dp,
             startActions = listOf(left),
             endActions = listOf(right),
+            backgroundUntilSwipeThreshold = Color.Transparent,
         ) {
             Column(
                 modifier = Modifier
@@ -113,15 +117,15 @@ private fun SwappingCardLandScape(filmName : String,
                         .clip(RoundedCornerShape(20.dp))
                         .background(Color(0xFF3E3F3F))
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.the_hunger_games_movie_poster),
+                    AsyncImage(
+                        model = filmUrl,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
+                            .fillMaxHeight(0.9f)
                             .padding(8.dp)
                     )
-
                     Column(
                         verticalArrangement = Arrangement.Center,
                         modifier =
@@ -172,6 +176,7 @@ private fun SwappingCardLandScape(filmName : String,
 private fun SwappingCardPortrait(filmName : String,
                                  filmAutor : String,
                                  filmMark : String,
+                                 filmUrl : String,
                                  OnSwapRight : () -> Unit,
                                  OnSwapLeft : () -> Unit)
 {
@@ -182,14 +187,14 @@ private fun SwappingCardPortrait(filmName : String,
             OnSwapLeft()
             Toast.makeText(mLocalContext, "Left", Toast.LENGTH_SHORT).show()
                   },
-        background = Color.Green
+        background = Color(0xFF006400)
     )
     val right = CreateSwipeAction(
         OnSwipe = {
             OnSwapRight()
             Toast.makeText(mLocalContext, "Right", Toast.LENGTH_SHORT).show()
                   },
-        background = Color.Red
+        background = Color(0xFF640000)
     )
 
     Column(
@@ -203,15 +208,19 @@ private fun SwappingCardPortrait(filmName : String,
             swipeThreshold = 100.dp,
             startActions = listOf(left),
             endActions = listOf(right),
+            backgroundUntilSwipeThreshold = Color.Transparent,
         ) {
            Column (horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painter = painterResource(id = R.drawable.the_hunger_games_movie_poster),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)),
-            )
+           AsyncImage(
+               model = filmUrl,
+               contentDescription = null,
+               contentScale = ContentScale.Crop,
+               modifier = Modifier
+                   .fillMaxWidth(0.8f)
+                   .fillMaxHeight(0.75f)
+                   .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+
+           )
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
@@ -230,10 +239,9 @@ private fun SwappingCardPortrait(filmName : String,
                         filmMark = filmMark,
                         sizeMainText = 20,
                         sizeSmallText = 15,
-
+                        smallTextHorizontalArrangement = Arrangement.End,
                         smallRowModifier = Modifier
                             .fillMaxSize(),
-
                         )
                 }
             }

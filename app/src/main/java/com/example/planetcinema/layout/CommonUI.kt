@@ -31,7 +31,9 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String,
-                 sizeMainText : Int, sizeSmallText : Int, smallTextModifier: Modifier = Modifier,
+                 sizeMainText : Int, sizeSmallText : Int,
+                 smallTextHorizontalArrangement : Arrangement.Horizontal = Arrangement.Start,
+                 smallTextModifier: Modifier = Modifier,
                  smallRowModifier : Modifier) {
         Column {
             Text(
@@ -56,7 +58,7 @@ fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String,
             )
         }
         Row (
-            horizontalArrangement = Arrangement.End,
+            horizontalArrangement = smallTextHorizontalArrangement,
             modifier = smallRowModifier
         ) {
             Icon(
