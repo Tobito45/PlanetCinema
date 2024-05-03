@@ -1,26 +1,49 @@
 package com.example.planetcinema.view
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.planetcinema.data.Film
-import com.example.planetcinema.data.FilmCreator
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.example.planetcinema.data.FilmsRepository
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
-class SwapViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(SpinUiState())
-    val uiState: StateFlow<SpinUiState> = _uiState.asStateFlow()
+class SwapViewModel(
+    private val filmRepository: FilmsRepository
+) : ViewModel() {
+    /*val uiState: StateFlow<SpinUiState> = filmRepository.getAllFilmsStream().map { SpinUiState(it.random()) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+            initialValue = SpinUiState()
+        )
+*/
+    var uiState by mutableStateOf(SpinUiState())
+        private set
+    init {
+        viewModelScope.launch {
+            uiState = SpinUiState(actualFilm =  filmRepository.getAllFilmsStream()
+                .first().random())
+        }
+    }
 
     fun generateNewFilm() {
-        _uiState.update { currentState ->
-            currentState.copy(
-                actualFilm = FilmCreator.GetRandom()
+        viewModelScope.launch {
+            uiState = SpinUiState(
+                actualFilm = filmRepository.getAllFilmsStream()
+                    .first().random()
             )
         }
+    }
+
+
+    companion object {
+        private const val TIMEOUT_MILLIS = 5_000L
     }
 }
 
 data class SpinUiState(
-    val actualFilm : Film = FilmCreator.GetRandom()
+    val actualFilm : Film = Film(name = "ERROR", id = -1, autor = "ERROR", url = "https://cdn.pixabay.com/photo/2017/02/12/21/29/false-2061132_640.png" , mark = 0.0f,)
 )

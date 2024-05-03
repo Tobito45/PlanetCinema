@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.google.devtools.ksp") version "1.9.20-1.0.14"
 }
 
 android {
@@ -76,6 +77,11 @@ dependencies {
     implementation(libs.swipe.v130)
 
     implementation(libs.coil.compose.v240)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.core.ktx.v1130)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

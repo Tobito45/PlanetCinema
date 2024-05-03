@@ -8,7 +8,7 @@ object  FilmCreator {
     fun GetRandom () : Film {
         return listFilms.random()
     }
-    init {
+  /*  init {
         listFilms += (Film("The Hunger Games", "Gary Ross", 7.8f,
                         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-X0EK_Uu2NW7mNfSb1Wjw87nmi1Wd7d-BDaHIBfm4sA&s"))
         listFilms += (Film("The Lord of the Rings", "Peter Jackson", 8.9f,
@@ -19,6 +19,6 @@ object  FilmCreator {
                         "https://m.media-amazon.com/images/M/MV5BYTRhNjcwNWQtMGJmMi00NmQyLWE2YzItODVmMTdjNWI0ZDA2XkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_.jpg"))
         listFilms += (Film("Indiana Jones", "Steven Spielberg", 8.2f,
                             "https://m.media-amazon.com/images/I/71USAqWyT9L._AC_UF894,1000_QL80_.jpg"))
-    }
+    }*/
 
 }

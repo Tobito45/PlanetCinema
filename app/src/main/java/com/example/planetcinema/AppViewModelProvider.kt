@@ -1,0 +1,26 @@
+package com.example.planetcinema
+
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.planetcinema.view.SwapViewModel
+import com.example.planetcinema.view.UserListViewModel
+
+object AppViewModelProvider {
+    val Factory = viewModelFactory {
+        initializer {
+            SwapViewModel(
+                planetCinemaApplication().container.filmsRepository
+            )
+        }
+        initializer {
+            UserListViewModel(
+                planetCinemaApplication().container.filmsRepository
+            )
+        }
+    }
+}
+
+fun CreationExtras.planetCinemaApplication(): PlanetCinemaApplication =
+    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as PlanetCinemaApplication)

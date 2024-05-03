@@ -16,6 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.planetcinema.AppViewModelProvider
 import com.example.planetcinema.data.Film
 import com.example.planetcinema.view.UserListViewModel
 import kotlin.math.ceil
@@ -31,12 +34,15 @@ import kotlin.math.ceil
 
 @Composable
 fun UserListCard(orientation: Int,
-                 viewModel: UserListViewModel = viewModel()
+                 viewModel: UserListViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val homeUiState by viewModel.homeUiState.collectAsState()
+
+
     if(orientation == Configuration.ORIENTATION_PORTRAIT) {
-        UserListScrollPortrait(viewModel.getAllFilms())
+        UserListScrollPortrait(homeUiState.itemList)
     } else {
-        UserListScrollLandscape(viewModel.getAllFilms())
+        UserListScrollLandscape(homeUiState.itemList)
     }
 }
 

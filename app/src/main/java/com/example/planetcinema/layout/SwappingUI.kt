@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.planetcinema.AppViewModelProvider
 import com.example.planetcinema.R
 import com.example.planetcinema.swipe.CreateSwipeAction
 import com.example.planetcinema.view.SwapViewModel
@@ -33,15 +32,13 @@ import me.saket.swipe.SwipeableActionsBox
 
 
 @Composable
-fun SwappingCard(orientation : Int, filmName : String,
-                 filmAutor : String,
-                 filmMark : String,
-                 viewModel: SwapViewModel = viewModel()
+fun SwappingCard(orientation : Int,
+                 viewModel: SwapViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState;
 
     if(orientation == Configuration.ORIENTATION_PORTRAIT) {
-        SwappingCardPortrait(uiState.actualFilm.name,
+        SwappingCardPortrait(uiState.actualFilm.name ,
                              uiState.actualFilm.autor,
                              uiState.actualFilm.mark.toString(),
                              uiState.actualFilm.url,
@@ -49,12 +46,12 @@ fun SwappingCard(orientation : Int, filmName : String,
                              { viewModel.generateNewFilm() }
         )
     } else {
-        SwappingCardLandScape(uiState.actualFilm.name,
+       SwappingCardLandScape(uiState.actualFilm.name,
                               uiState.actualFilm.autor,
                               uiState.actualFilm.mark.toString(),
                               uiState.actualFilm.url,
                               { viewModel.generateNewFilm() },
-                              { viewModel.generateNewFilm() }
+                              { viewModel.generateNewFilm() } //viewModel.generateNewFilm()
         )
     }
 }
