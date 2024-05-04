@@ -16,19 +16,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
 import com.example.planetcinema.AppViewModelProvider
 import com.example.planetcinema.data.Film
 import com.example.planetcinema.view.UserListViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
 
@@ -36,18 +35,18 @@ import kotlin.math.ceil
 fun UserListCard(orientation: Int,
                  viewModel: UserListViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val homeUiState by viewModel.homeUiState.collectAsState()
-
+    val coroutineScope = rememberCoroutineScope()
 
     if(orientation == Configuration.ORIENTATION_PORTRAIT) {
-        UserListScrollPortrait(homeUiState.itemList)
+        UserListScrollPortrait(viewModel, coroutineScope)
     } else {
-        UserListScrollLandscape(homeUiState.itemList)
+        UserListScrollLandscape(viewModel, coroutineScope)
     }
 }
 
 @Composable
-private fun UserListScrollPortrait(films : List<Film>) {
+private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : CoroutineScope) {
+
     Column {
         Spacer(
             modifier =
@@ -61,12 +60,15 @@ private fun UserListScrollPortrait(films : List<Film>) {
                 .fillMaxWidth()
                 .fillMaxHeight(0.88f)
         ) {
-            items(films.size) { index ->
+            items(viewModel.uiState.filmList.size) { index ->
                 UserListElement(
-                    filmName = films[index].name,
-                    filmAutor = films[index].autor,
-                    filmMark = films[index].mark.toString(),
-                    filmUrl = films[index].url,
+                    film = viewModel.uiState.filmList[index],
+                    onCheckedValue = {
+                        scope.launch {
+                            viewModel.watchFilm(viewModel.uiState.filmList[index])
+                        }
+                    },
+                    isChecked = viewModel.uiState.watchedFilms[index],
                     Modifier
                         .fillMaxWidth(0.9f)
                         .height(170.dp)
@@ -89,7 +91,7 @@ private fun UserListScrollPortrait(films : List<Film>) {
 
 
 @Composable
-private fun UserListScrollLandscape(films : List<Film>) {
+private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : CoroutineScope) {
     Column {
         Spacer(
             modifier =
@@ -104,14 +106,17 @@ private fun UserListScrollLandscape(films : List<Film>) {
                 .fillMaxHeight(0.7f)
                 .padding(horizontal = 20.dp)
         ) {
-            items(ceil(films.size.toFloat() / 2.0f).toInt()) { index ->
+            items(ceil(viewModel.uiState.filmList.size.toFloat() / 2.0f).toInt()) { index ->
                Row {
                     UserListElement(
-                        filmName = films[index].name,
-                        filmAutor = films[index].autor,
-                        filmMark = films[index].mark.toString(),
-                        filmUrl = films[index].url,
-                        Modifier
+                        film = viewModel.uiState.filmList[index],
+                        onCheckedValue = {
+                            scope.launch {
+                                viewModel.watchFilm(viewModel.uiState.filmList[index])
+                            }
+                        },
+                        isChecked = viewModel.uiState.watchedFilms[index],
+                        generalModifier = Modifier
                             .fillMaxWidth(0.5f)
                             .height(100.dp)
                             .padding(top = 20.dp, end = 10.dp)
@@ -125,13 +130,16 @@ private fun UserListScrollLandscape(films : List<Film>) {
                             .fillMaxSize(0.85f)
                             .padding(top = 2.dp)
                     )
-                   val secondIndex = films.size - 1 - index
+                   val secondIndex = viewModel.uiState.filmList.size - 1 - index
                     if (secondIndex != index) {
                         UserListElement(
-                            filmName = films[secondIndex].name,
-                            filmAutor = films[secondIndex].autor,
-                            filmMark = films[secondIndex].mark.toString(),
-                            filmUrl = films[secondIndex].url,
+                            film = viewModel.uiState.filmList[secondIndex],
+                            onCheckedValue = {
+                                scope.launch {
+                                    viewModel.watchFilm(viewModel.uiState.filmList[secondIndex])
+                                }
+                            },
+                            isChecked = viewModel.uiState.watchedFilms[secondIndex],
                             generalModifier = Modifier
                                 .fillMaxWidth()
                                 .height(100.dp)
@@ -154,10 +162,9 @@ private fun UserListScrollLandscape(films : List<Film>) {
 }
 
 @Composable
-fun UserListElement(filmName : String,
-                    filmAutor : String,
-                    filmMark : String,
-                    filmUrl : String,
+fun UserListElement(film : Film,
+                    onCheckedValue : (Film) -> Unit,
+                    isChecked : Boolean,
                     generalModifier : Modifier,
                     imageModifier : Modifier,
                     smallTextModifier : Modifier,
@@ -166,38 +173,28 @@ fun UserListElement(filmName : String,
     Row(
         modifier = generalModifier
     ) {
-        AsyncImage(
-            model = filmUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
+        BasicAsyncImage(
+            url = film.url,
             modifier = imageModifier
         )
-        /*Image(
-            painter = painterResource(id = R.drawable.the_hunger_games_movie_poster),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = imageModifier
-        )*/
-
         Column (
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth(0.8f)) {
             TextInfoFilm(
-                filmName = filmName,
-                filmAutor = filmAutor,
-                filmMark = filmMark,
+                filmName = film.name,
+                filmAutor = film.autor,
+                filmMark = film.mark.toString(),
                 sizeMainText = 18,
                 sizeSmallText = 15,
                 smallTextModifier = smallTextModifier,
                 smallRowModifier = markRowModifier)
         }
 
-
         Checkbox(
-            checked = false,
-            onCheckedChange = { },
+            checked = isChecked,
+            onCheckedChange = { onCheckedValue(film) },
             colors = CheckboxDefaults.colors(
                 checkedColor = Color(0xFFF1F8E9)
             ),
@@ -206,6 +203,5 @@ fun UserListElement(filmName : String,
                 .padding(end = 20.dp)
         )
     }
-
 }
 

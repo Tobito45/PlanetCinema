@@ -14,20 +14,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
 import com.example.planetcinema.AppViewModelProvider
 import com.example.planetcinema.R
 import com.example.planetcinema.swipe.CreateSwipeAction
 import com.example.planetcinema.view.SwapViewModel
+import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeableActionsBox
 
 
@@ -36,22 +36,29 @@ fun SwappingCard(orientation : Int,
                  viewModel: SwapViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState = viewModel.uiState;
+    val coroutineScope = rememberCoroutineScope()
 
     if(orientation == Configuration.ORIENTATION_PORTRAIT) {
         SwappingCardPortrait(uiState.actualFilm.name ,
                              uiState.actualFilm.autor,
                              uiState.actualFilm.mark.toString(),
                              uiState.actualFilm.url,
-                             { viewModel.generateNewFilm() },
+                             { coroutineScope.launch {
+                                 viewModel.checkFilm()
+                             }
+                             },
                              { viewModel.generateNewFilm() }
         )
     } else {
-       SwappingCardLandScape(uiState.actualFilm.name,
+       SwappingCardLandScape(uiState.actualFilm.name, //mb make to one object
                               uiState.actualFilm.autor,
                               uiState.actualFilm.mark.toString(),
                               uiState.actualFilm.url,
-                              { viewModel.generateNewFilm() },
-                              { viewModel.generateNewFilm() } //viewModel.generateNewFilm()
+                               { coroutineScope.launch {
+                                   viewModel.checkFilm()
+                               }
+                               },
+                              { viewModel.generateNewFilm() }
         )
     }
 }
@@ -75,14 +82,15 @@ private fun SwappingCardLandScape(filmName : String,
                 OnSwapLeft()
                 Toast.makeText(mLocalContext, "Left", Toast.LENGTH_SHORT).show()
             },
-            background = Color(0xFF006400)
+            background = Color(0xFF640000)
         )
         val right = CreateSwipeAction(
             OnSwipe = {
                 OnSwapRight()
                 Toast.makeText(mLocalContext, "Right", Toast.LENGTH_SHORT).show()
             },
-            background = Color(0xFF640000)
+            background = Color(0xFF006400)
+
         )
 
         Icon(
@@ -114,10 +122,8 @@ private fun SwappingCardLandScape(filmName : String,
                         .clip(RoundedCornerShape(20.dp))
                         .background(Color(0xFF3E3F3F))
                 ) {
-                    AsyncImage(
-                        model = filmUrl,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
+                    BasicAsyncImage(
+                        url = filmUrl,
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
                             .fillMaxHeight(0.9f)
@@ -184,14 +190,14 @@ private fun SwappingCardPortrait(filmName : String,
             OnSwapLeft()
             Toast.makeText(mLocalContext, "Left", Toast.LENGTH_SHORT).show()
                   },
-        background = Color(0xFF006400)
+                background = Color(0xFF640000)
     )
     val right = CreateSwipeAction(
         OnSwipe = {
             OnSwapRight()
             Toast.makeText(mLocalContext, "Right", Toast.LENGTH_SHORT).show()
                   },
-        background = Color(0xFF640000)
+        background = Color(0xFF006400)
     )
 
     Column(
@@ -208,15 +214,12 @@ private fun SwappingCardPortrait(filmName : String,
             backgroundUntilSwipeThreshold = Color.Transparent,
         ) {
            Column (horizontalAlignment = Alignment.CenterHorizontally) {
-           AsyncImage(
-               model = filmUrl,
-               contentDescription = null,
-               contentScale = ContentScale.Crop,
+           BasicAsyncImage(
+               url = filmUrl,
                modifier = Modifier
                    .fillMaxWidth(0.8f)
                    .fillMaxHeight(0.75f)
                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-
            )
             Box(
                 modifier = Modifier

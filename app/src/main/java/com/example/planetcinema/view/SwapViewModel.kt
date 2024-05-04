@@ -13,19 +13,13 @@ import kotlinx.coroutines.launch
 class SwapViewModel(
     private val filmRepository: FilmsRepository
 ) : ViewModel() {
-    /*val uiState: StateFlow<SpinUiState> = filmRepository.getAllFilmsStream().map { SpinUiState(it.random()) }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-            initialValue = SpinUiState()
-        )
-*/
     var uiState by mutableStateOf(SpinUiState())
         private set
     init {
         viewModelScope.launch {
-            uiState = SpinUiState(actualFilm =  filmRepository.getAllFilmsStream()
-                .first().random())
+            val randomFilms = filmRepository.getAllFilmsStream().first();
+            if(!randomFilms.isEmpty())
+                uiState = SpinUiState(actualFilm = randomFilms.random())
         }
     }
 
@@ -38,6 +32,13 @@ class SwapViewModel(
         }
     }
 
+    suspend fun checkFilm() {
+        filmRepository.updateFilm(uiState.actualFilm.take())
+        uiState = SpinUiState(
+            actualFilm = filmRepository.getAllFilmsStream()
+                .first().random()
+        )
+    }
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
