@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.planetcinema.view.SwapViewModel
 import com.example.planetcinema.view.UserListViewModel
+import com.example.planetcinema.view.WheelViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
@@ -16,6 +17,11 @@ object AppViewModelProvider {
         }
         initializer {
             UserListViewModel(
+                planetCinemaApplication().container.filmsRepository
+            )
+        }
+        initializer {
+            WheelViewModel(
                 planetCinemaApplication().container.filmsRepository
             )
         }

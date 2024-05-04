@@ -21,8 +21,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,32 +33,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.planetcinema.AppViewModelProvider
 import com.example.planetcinema.R
+import com.example.planetcinema.data.Film
 import com.example.planetcinema.view.WheelViewModel
 import com.lyh.spintest.SpinWheelComponent
 import com.lyh.spintest.SpinWheelItem
 import com.lyh.spintest.SpinWheelState
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 
 @Composable
-fun WheelCard(orientation : Int, viewModel: WheelViewModel = viewModel()) {
+fun WheelCard(orientation : Int, viewModel: WheelViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+    val coroutineScope = rememberCoroutineScope()
+
     if(orientation == Configuration.ORIENTATION_PORTRAIT) {
-        WheelCardPortarait(viewModel)
+        WheelCardPortarait(viewModel, coroutineScope)
     } else {
-        WheelCardLandScape(viewModel)
+        WheelCardLandScape(viewModel, coroutineScope)
     }
 }
 
 
 
 @Composable
-private fun WheelCardPortarait(viewModel : WheelViewModel) {
-    val uiState by viewModel.uiState.collectAsState()
-
+private fun WheelCardPortarait(viewModel : WheelViewModel, scope: CoroutineScope ) {
     Column (
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -70,12 +71,15 @@ private fun WheelCardPortarait(viewModel : WheelViewModel) {
         Modifier.fillMaxHeight(0.15f))
 
         Wheel(
-            films = uiState.films,
-            generateNumber = { viewModel.getRandomWheelNumber(it) },
+            films = viewModel.uiState.filmsInWheel,
             modifier = Modifier
             .fillMaxHeight(0.5f)
             .fillMaxWidth(),
-            activeButtons = { viewModel.activeAllButtons(it) },
+            activeButtons = {
+                scope.launch {
+                    viewModel.activeAllButtons(it)
+                } },
+            generateNumber = { viewModel.getRandomWheelNumber(it) },
             orientation = 0,
         )
 
@@ -89,14 +93,18 @@ private fun WheelCardPortarait(viewModel : WheelViewModel) {
                 .fillMaxWidth(0.8f)) {
 
             WheelButton(
-                OnButtonClicked =  { viewModel.addFilm(uiState.films) },
-                isEnable = uiState.activeButtons,
+                OnButtonClicked =  { scope.launch {
+                    viewModel.addFilm()
+                } },
+                isEnable = viewModel.uiState.activeButtons,
                 textButton = "Add movie",
                 buttonIcon = Icons.Filled.Add
             )
             WheelButton(
-                OnButtonClicked =  { viewModel.clearFilms() },
-                isEnable = uiState.films.isNotEmpty() && uiState.activeButtons,
+                OnButtonClicked = { scope.launch {
+                    viewModel.clearFilms()
+                } },
+                isEnable = viewModel.uiState.films.isNotEmpty() && viewModel.uiState.activeButtons,
                 textButton =  "Clear",
                 buttonIcon =  Icons.Filled.Delete
             )
@@ -105,8 +113,7 @@ private fun WheelCardPortarait(viewModel : WheelViewModel) {
 }
 
 @Composable
-private fun WheelCardLandScape(viewModel: WheelViewModel) {
-    val uiState by viewModel.uiState.collectAsState()
+private fun WheelCardLandScape(viewModel: WheelViewModel, scope: CoroutineScope ) {
 
     Row (
         verticalAlignment = Alignment.CenterVertically,
@@ -126,28 +133,35 @@ private fun WheelCardLandScape(viewModel: WheelViewModel) {
                 .fillMaxWidth(0.4f)) {
 
             WheelButton(
-                OnButtonClicked =  { viewModel.addFilm(uiState.films) },
-                isEnable = uiState.activeButtons,
+                OnButtonClicked = { scope.launch {
+                    viewModel.addFilm()
+                } },
+                isEnable = viewModel.uiState.activeButtons,
                 textButton = "Add movie",
                 buttonIcon =  Icons.Filled.Add,
                 modifier =  Modifier.padding(20.dp)
             )
             WheelButton(
-                OnButtonClicked =  { viewModel.clearFilms() },
-                isEnable = uiState.films.isNotEmpty() && uiState.activeButtons,
+                OnButtonClicked =  { scope.launch {
+                    viewModel.clearFilms()
+                } },
+                isEnable = viewModel.uiState.films.isNotEmpty() && viewModel.uiState.activeButtons,
                 textButton = "Clear",
                 buttonIcon = Icons.Filled.Delete
             )
         }
         Wheel(
-            films = uiState.films,
-            generateNumber = { viewModel.getRandomWheelNumber(it) },
+            films = viewModel.uiState.filmsInWheel,
             modifier = Modifier
             .fillMaxHeight(0.5f)
             .fillMaxWidth(0.5f).padding(bottom = 100.dp),
-            activeButtons = { viewModel.activeAllButtons(it) },
+            activeButtons = { scope.launch {
+                viewModel.activeAllButtons(it)
+            } },
             orientation = 1,
+            generateNumber = { viewModel.getRandomWheelNumber(it) },
             )
+
     }
 
 }
@@ -195,7 +209,7 @@ private fun WheelButton(OnButtonClicked : () -> Unit,
 
 @Composable
 fun Wheel(modifier: Modifier,
-          films : List<String>,
+          films : List<Film>,
           generateNumber : (Int) -> Int,
           activeButtons : (Boolean) -> Unit,
           orientation: Int
@@ -214,7 +228,7 @@ fun Wheel(modifier: Modifier,
                                     else  (index) % 4  + 1];
             SpinWheelItem(colors = colors.toPersistentList()) {
                 AutoResizedText(
-                    text = if(films.isEmpty()) "Empty List " else  films[index],
+                    text = if(films.isEmpty()) "Empty List " else films[index].name,
                     style = TextStyle(color = Color.White, fontSize =
                         if(orientation == 0) 18.sp else 10.sp),
                     modifier = Modifier.rotate(90f).padding(start =

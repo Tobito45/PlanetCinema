@@ -1,23 +1,36 @@
 package com.example.planetcinema.view
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.planetcinema.data.FilmCreator
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import androidx.lifecycle.viewModelScope
+import com.example.planetcinema.data.Film
+import com.example.planetcinema.data.FilmsRepository
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class WheelViewModel : ViewModel()  {
+class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel()  {
     //private val randomFilmsList : List<String> = listOf("Screem", "Wallken dead", "The hunger name", "Star wars", "Dasha lox 2")
-    private val _uiState = MutableStateFlow(WheelUiState())
+    var uiState by mutableStateOf(WheelUiState())
+        private set
 
-    val uiState: StateFlow<WheelUiState> = _uiState.asStateFlow()
+    init {
+        viewModelScope.launch {
+            filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
+                uiState = WheelUiState(
+                    films = updatedFilmList,
+                )
+            }
+        }
+    }
 
-
-    fun activeAllButtons(active : Boolean) {
-        _uiState.update { currentState ->
-            currentState.copy(
+    suspend fun activeAllButtons(active : Boolean) {
+        val filmsInWheel = uiState.filmsInWheel
+        filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
+            uiState = WheelUiState(
+                films = updatedFilmList,
+                filmsInWheel = filmsInWheel,
                 activeButtons = active
             )
         }
@@ -27,24 +40,30 @@ class WheelViewModel : ViewModel()  {
         return Random.nextInt(0, max)
     }
 
-    fun addFilm(filmsOld : List<String>) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                films = filmsOld + FilmCreator.GetRandom().name
+    suspend fun addFilm() {
+        val filmsInWheel = uiState.filmsInWheel
+        filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
+            uiState = WheelUiState(
+                films = updatedFilmList,
+                filmsInWheel = filmsInWheel + updatedFilmList.random(),
+                activeButtons = true
             )
         }
     }
 
-    fun clearFilms() {
-        _uiState.update { currentState ->
-            currentState.copy(
-                films = listOf()
+    suspend fun clearFilms() {
+        filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
+            uiState = WheelUiState(
+                films = updatedFilmList,
+                filmsInWheel = listOf(),
+                activeButtons = true
             )
         }
     }
 }
 
 data class WheelUiState(
-    val films : List<String> = listOf(),
+    val films : List<Film> = listOf(),
+    val filmsInWheel : List<Film> = listOf(),
     var activeButtons: Boolean = true
 )
