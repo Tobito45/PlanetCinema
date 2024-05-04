@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel()  {
-    //private val randomFilmsList : List<String> = listOf("Screem", "Wallken dead", "The hunger name", "Star wars", "Dasha lox 2")
     var uiState by mutableStateOf(WheelUiState())
         private set
 

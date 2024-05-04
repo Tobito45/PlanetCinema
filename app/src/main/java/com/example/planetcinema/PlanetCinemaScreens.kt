@@ -1,7 +1,9 @@
 package com.example.planetcinema
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,6 +14,8 @@ import com.example.planetcinema.layout.SquareBackgroundHeader
 import com.example.planetcinema.layout.SwappingCard
 import com.example.planetcinema.layout.UserListCard
 import com.example.planetcinema.layout.WheelCard
+import com.example.planetcinema.view.UserListViewModel
+import kotlinx.coroutines.launch
 
 
 enum class PlaneCinemaScreen() {
@@ -52,9 +56,10 @@ fun SwapScreen(
     navController: NavHostController,
 ) {
     val orientation = LocalConfiguration.current.orientation
+    val coroutineScope = rememberCoroutineScope()
 
     SquareBackgroundHeader(orientation, 0);
-    Header("Discover");
+    Header("Discover", { /* TODO */});
     SwappingCard(orientation)
     NavBar(selectedItem, orientation, navController)
 }
@@ -65,9 +70,10 @@ fun WheelScreen(
     navController: NavHostController,
 ) {
     val orientation = LocalConfiguration.current.orientation
+    val coroutineScope = rememberCoroutineScope()
 
     SquareBackgroundHeader(orientation, 1);
-    Header("Select a movie");
+    Header("Select a movie", { /* TODO */});
     WheelCard(orientation)
     NavBar(selectedItem, orientation, navController)
 }
@@ -76,11 +82,19 @@ fun WheelScreen(
 fun UserListScreen(
     selectedItem : Int,
     navController: NavHostController,
+    viewModel: UserListViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val orientation = LocalConfiguration.current.orientation
+    val coroutineScope = rememberCoroutineScope()
+
 
     SquareBackgroundHeader(orientation, 2);
-    Header("All movies");
-    UserListCard(orientation)
+    Header("All movies",
+           onIconClick = { coroutineScope.launch {
+                viewModel.sortInOrderWatch()
+               }
+           }
+    );
+    UserListCard(orientation = orientation, viewModel = viewModel, coroutineScope = coroutineScope)
     NavBar(selectedItem, orientation, navController)
 }

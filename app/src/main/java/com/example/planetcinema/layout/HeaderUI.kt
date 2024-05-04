@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.example.planetcinema.R
 
 @Composable
-fun Header(panelName : String) {
+fun Header(panelName : String, onIconClick: () -> Unit) {
     Row(
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Start,
@@ -45,15 +46,18 @@ fun Header(panelName : String) {
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
         )
-        Icon(
-            painter = painterResource(id = R.drawable.baseline_tune_36),
-            null,
-            tint = Color.White,
-            modifier = Modifier
+        IconButton(onClick = onIconClick,
+                modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.End)
-                .size(50.dp),
-        )
+                .size(50.dp),) {
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_tune_36),
+                null,
+                tint = Color.White,
+
+            )
+        }
     }
 }
 

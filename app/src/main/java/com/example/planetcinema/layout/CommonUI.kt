@@ -43,18 +43,25 @@ fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String,
                  smallRowModifier : Modifier) {
         Column {
             Text(
-                text = filmName,
+                text = if (filmName != "#???#") filmName else "???",
                 color = Color.White,
                 fontWeight = FontWeight.Normal,
                 fontSize = sizeMainText.sp
             )
 
-            val annotatedString = buildAnnotatedString {
-                append("By ")
-                withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
-                    append(filmAutor)
+            val annotatedString = if (filmAutor != "#???#") {
+                buildAnnotatedString {
+                    append("By ")
+                    withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
+                        append(filmAutor)
+                    }
+                }
+            } else {
+                buildAnnotatedString {
+                    append("???")
                 }
             }
+
             Text(
                 text = annotatedString,
                 color = Color.White,
@@ -75,7 +82,7 @@ fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String,
                     .size(30.dp)
             )
             Text(
-                text = filmMark,
+                text = if(filmMark != "-1.0") filmMark else "?",
                 color = Color.White,
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Light,

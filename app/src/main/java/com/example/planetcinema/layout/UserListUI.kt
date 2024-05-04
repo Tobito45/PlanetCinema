@@ -16,14 +16,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.planetcinema.AppViewModelProvider
 import com.example.planetcinema.data.Film
 import com.example.planetcinema.view.UserListViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -33,9 +30,9 @@ import kotlin.math.ceil
 
 @Composable
 fun UserListCard(orientation: Int,
-                 viewModel: UserListViewModel = viewModel(factory = AppViewModelProvider.Factory)
+                 viewModel: UserListViewModel,
+                 coroutineScope: CoroutineScope
 ) {
-    val coroutineScope = rememberCoroutineScope()
 
     if(orientation == Configuration.ORIENTATION_PORTRAIT) {
         UserListScrollPortrait(viewModel, coroutineScope)
@@ -60,29 +57,33 @@ private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : Corouti
                 .fillMaxWidth()
                 .fillMaxHeight(0.88f)
         ) {
-            items(viewModel.uiState.filmList.size) { index ->
-                UserListElement(
-                    film = viewModel.uiState.filmList[index],
-                    onCheckedValue = {
-                        scope.launch {
-                            viewModel.watchFilm(viewModel.uiState.filmList[index])
-                        }
-                    },
-                    isChecked = viewModel.uiState.watchedFilms[index],
-                    Modifier
-                        .fillMaxWidth(0.9f)
-                        .height(170.dp)
-                        .padding(top = 20.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Color(0xFF3E3F3F)),
-                    imageModifier = Modifier
-                        .fillMaxWidth(0.4f)
-                        .padding(20.dp),
-                    smallTextModifier = Modifier.padding(top = 10.dp),
-                    markRowModifier = Modifier
-                        .fillMaxSize(0.7f)
-                        .padding(top = 18.dp)
-                )
+            items(viewModel.uiState.filmList.size + 1) { index ->
+                    UserListElement(
+                        film = if (index != viewModel.uiState.filmList.size) viewModel.uiState.filmList[index]
+                                else Film(name = "#???#", autor = "#???#", mark = -1.0f, url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTXtOwPfVadN_I7YzkGc_CzjwOTNOvzjNxsg&usqp=CAU") ,
+                        onCheckedValue = {
+                            if (index != viewModel.uiState.filmList.size) {
+                                scope.launch {
+                                    viewModel.watchFilm(viewModel.uiState.filmList[index])
+                                }
+                            }
+                        },
+                        isChecked = if(index != viewModel.uiState.filmList.size) viewModel.uiState.watchedFilms[index] else false,
+                        hasChecker = index != viewModel.uiState.filmList.size,
+                        generalModifier =  Modifier
+                            .fillMaxWidth(0.9f)
+                            .height(170.dp)
+                            .padding(top = 20.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color(0xFF3E3F3F)),
+                        imageModifier = Modifier
+                            .fillMaxWidth(0.4f)
+                            .padding(20.dp),
+                        smallTextModifier = Modifier.padding(top = 10.dp),
+                        markRowModifier = Modifier
+                            .fillMaxSize(0.7f)
+                            .padding(top = 18.dp)
+                    )
             }
 
         }
@@ -106,16 +107,26 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                 .fillMaxHeight(0.7f)
                 .padding(horizontal = 20.dp)
         ) {
-            items(ceil(viewModel.uiState.filmList.size.toFloat() / 2.0f).toInt()) { index ->
-               Row {
+            val result = ceil(viewModel.uiState.filmList.size.toFloat() / 2.0f).toInt()
+            items(if (viewModel.uiState.filmList.size % 2 == 0) result + 1 else result) { index ->
+                Row {
                     UserListElement(
-                        film = viewModel.uiState.filmList[index],
+                        film = if (index < result) viewModel.uiState.filmList[index]
+                        else Film(
+                            name = "#???#",
+                            autor = "#???#",
+                            mark = -1.0f,
+                            url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTXtOwPfVadN_I7YzkGc_CzjwOTNOvzjNxsg&usqp=CAU"
+                        ),
                         onCheckedValue = {
-                            scope.launch {
-                                viewModel.watchFilm(viewModel.uiState.filmList[index])
+                            if (index < result) {
+                                scope.launch {
+                                    viewModel.watchFilm(viewModel.uiState.filmList[index])
+                                }
                             }
                         },
-                        isChecked = viewModel.uiState.watchedFilms[index],
+                        isChecked = if (index < result) viewModel.uiState.watchedFilms[index] else false,
+                        hasChecker = index < result,
                         generalModifier = Modifier
                             .fillMaxWidth(0.5f)
                             .height(100.dp)
@@ -130,16 +141,25 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                             .fillMaxSize(0.85f)
                             .padding(top = 2.dp)
                     )
-                   val secondIndex = viewModel.uiState.filmList.size - 1 - index
-                    if (secondIndex != index) {
+                    if (index < result) {
+                        val secondIndex = viewModel.uiState.filmList.size - 1 - index
                         UserListElement(
-                            film = viewModel.uiState.filmList[secondIndex],
+                            film = if (secondIndex != index) viewModel.uiState.filmList[secondIndex]
+                            else Film(
+                                name = "#???#",
+                                autor = "#???#",
+                                mark = -1.0f,
+                                url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTXtOwPfVadN_I7YzkGc_CzjwOTNOvzjNxsg&usqp=CAU"
+                            ),
                             onCheckedValue = {
-                                scope.launch {
-                                    viewModel.watchFilm(viewModel.uiState.filmList[secondIndex])
+                                if (secondIndex != index) {
+                                    scope.launch {
+                                        viewModel.watchFilm(viewModel.uiState.filmList[secondIndex])
+                                    }
                                 }
                             },
-                            isChecked = viewModel.uiState.watchedFilms[secondIndex],
+                            isChecked = if (secondIndex != index) viewModel.uiState.watchedFilms[secondIndex] else false,
+                            hasChecker = secondIndex != index,
                             generalModifier = Modifier
                                 .fillMaxWidth()
                                 .height(100.dp)
@@ -165,6 +185,7 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
 fun UserListElement(film : Film,
                     onCheckedValue : (Film) -> Unit,
                     isChecked : Boolean,
+                    hasChecker : Boolean = true,
                     generalModifier : Modifier,
                     imageModifier : Modifier,
                     smallTextModifier : Modifier,
@@ -192,16 +213,18 @@ fun UserListElement(film : Film,
                 smallRowModifier = markRowModifier)
         }
 
-        Checkbox(
-            checked = isChecked,
-            onCheckedChange = { onCheckedValue(film) },
-            colors = CheckboxDefaults.colors(
-                checkedColor = Color(0xFFF1F8E9)
-            ),
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(end = 20.dp)
-        )
+        if(hasChecker) {
+            Checkbox(
+                checked = isChecked,
+                onCheckedChange = { onCheckedValue(film) },
+                colors = CheckboxDefaults.colors(
+                    checkedColor = Color(0xFFF1F8E9)
+                ),
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(end = 20.dp)
+            )
+        }
     }
 }
 

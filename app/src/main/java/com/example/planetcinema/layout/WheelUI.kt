@@ -124,7 +124,6 @@ private fun WheelCardLandScape(viewModel: WheelViewModel, scope: CoroutineScope 
         Spacer(modifier =
         Modifier.fillMaxHeight(0.25f))
 
-
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -161,9 +160,7 @@ private fun WheelCardLandScape(viewModel: WheelViewModel, scope: CoroutineScope 
             orientation = 1,
             generateNumber = { viewModel.getRandomWheelNumber(it) },
             )
-
     }
-
 }
 
 

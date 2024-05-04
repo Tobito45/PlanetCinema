@@ -30,11 +30,34 @@ class UserListViewModel(private val filmRepository: FilmsRepository) : ViewModel
     }
 
     suspend fun watchFilm(film : Film) {
+        var sorted = uiState.sorted
         filmRepository.updateFilm(film.watch(!film.isWatched))
         filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
+            val sortedFilmList = if (sorted) {
+                updatedFilmList.sortedByDescending { it.isWatched }
+            } else {
+                updatedFilmList
+            }
             uiState = UserListUiState(
-                filmList = updatedFilmList,
-                watchedFilms = updatedFilmList.map { it.isWatched }
+                filmList = sortedFilmList ,
+                watchedFilms = sortedFilmList.map { it.isWatched },
+                sorted = sorted,
+            )
+        }
+    }
+
+    suspend fun sortInOrderWatch() {
+        var sorted = !uiState.sorted
+        filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
+            val sortedFilmList = if (sorted) {
+                updatedFilmList.sortedByDescending { it.isWatched }
+            } else {
+                updatedFilmList
+            }
+            uiState = UserListUiState(
+                filmList = sortedFilmList ,
+                watchedFilms = sortedFilmList.map { it.isWatched },
+                sorted = sorted,
             )
         }
     }
@@ -43,5 +66,6 @@ class UserListViewModel(private val filmRepository: FilmsRepository) : ViewModel
 
 data class UserListUiState(
     val filmList: List<Film> = listOf(),
-    val watchedFilms : List<Boolean> = listOf()
+    val watchedFilms : List<Boolean> = listOf(),
+    val sorted : Boolean = false
 )
