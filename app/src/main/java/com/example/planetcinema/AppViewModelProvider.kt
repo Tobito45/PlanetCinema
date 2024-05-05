@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.planetcinema.view.EditViewModel
 import com.example.planetcinema.view.SwapViewModel
 import com.example.planetcinema.view.UserListViewModel
 import com.example.planetcinema.view.WheelViewModel
@@ -22,6 +23,11 @@ object AppViewModelProvider {
         }
         initializer {
             WheelViewModel(
+                planetCinemaApplication().container.filmsRepository
+            )
+        }
+        initializer {
+            EditViewModel(
                 planetCinemaApplication().container.filmsRepository
             )
         }

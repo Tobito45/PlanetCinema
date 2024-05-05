@@ -1,13 +1,16 @@
 package com.example.planetcinema
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.planetcinema.layout.EditFilmCard
 import com.example.planetcinema.layout.Header
 import com.example.planetcinema.layout.NavBar
@@ -15,6 +18,7 @@ import com.example.planetcinema.layout.SquareBackgroundHeader
 import com.example.planetcinema.layout.SwappingCard
 import com.example.planetcinema.layout.UserListCard
 import com.example.planetcinema.layout.WheelCard
+import com.example.planetcinema.view.EditViewModel
 import com.example.planetcinema.view.UserListViewModel
 import kotlinx.coroutines.launch
 
@@ -48,8 +52,11 @@ fun PlanetCinemaApp(
         composable(route = PlaneCinemaScreen.UserList.name) {
             UserListScreen(PlaneCinemaScreen.UserList.ordinal, navController)
         }
-        composable(route = PlaneCinemaScreen.Edit.name) {
-            EditScreen(navController)
+        composable(route = "${PlaneCinemaScreen.Edit.name}/{filmId}",
+            arguments = listOf(navArgument("filmId") { type = NavType.StringType })) {
+                backStackEntry ->
+            val filmId = backStackEntry.arguments?.getString("filmId")?.toIntOrNull() ?: 0
+            EditScreen(navController, filmId)
         }
     }
 }
@@ -100,15 +107,29 @@ fun UserListScreen(
                }
            }
     );
-    UserListCard(orientation = orientation, viewModel = viewModel, coroutineScope = coroutineScope, navController = navController)
+    UserListCard(orientation = orientation, viewModel = viewModel,
+        coroutineScope = coroutineScope,
+        navController = navController)
     NavBar(selectedItem, orientation, navController)
 }
 
 @Composable
 fun EditScreen(
     navController: NavHostController,
+    filmId : Int,
+    viewModel: EditViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val orientation = LocalConfiguration.current.orientation
+    val coroutineScope = rememberCoroutineScope()
 
-    EditFilmCard(orientation = orientation, onNavigateUp = { navController.navigateUp() } )
+    LaunchedEffect(Unit) {
+        viewModel.setBasicParameters(filmId)
+    }
+
+
+    EditFilmCard(orientation = orientation,
+        onNavigateUp = { navController.navigateUp() },
+        viewModel = viewModel,
+        scope = coroutineScope
+        )
 }

@@ -72,7 +72,8 @@ private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : Corouti
                                 }
                             }
                         },
-                        onImageClick = { navController.navigate(PlaneCinemaScreen.Edit.name) },
+                        onImageClick = { navController.navigate("${PlaneCinemaScreen.Edit.name}/" +
+                                "${if(index != viewModel.uiState.filmList.size) viewModel.uiState.filmList[index].id else -1 }") },
                         isChecked = if(index != viewModel.uiState.filmList.size) viewModel.uiState.watchedFilms[index] else false,
                         hasChecker = index != viewModel.uiState.filmList.size,
                         genarelModifier =  Modifier
@@ -130,7 +131,8 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                                 }
                             }
                         },
-                        onImageClick = { navController.navigate(PlaneCinemaScreen.Edit.name) },
+                        onImageClick = { navController.navigate("${PlaneCinemaScreen.Edit.name}/" +
+                                "${if(index < result) viewModel.uiState.filmList[index].id else -1 }") },
                         isChecked = if (index < result) viewModel.uiState.watchedFilms[index] else false,
                         hasChecker = index < result,
                         genarelModifier = Modifier
@@ -164,7 +166,8 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                                     }
                                 }
                             },
-                            onImageClick = { navController.navigate(PlaneCinemaScreen.Edit.name) },
+                            onImageClick = { navController.navigate("${PlaneCinemaScreen.Edit.name}/" +
+                                    "${if(secondIndex != index) viewModel.uiState.filmList[secondIndex].id else -1 }") },
                             isChecked = if (secondIndex != index) viewModel.uiState.watchedFilms[secondIndex] else false,
                             hasChecker = secondIndex != index,
                             genarelModifier = Modifier
@@ -191,7 +194,7 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
 @Composable
 fun UserListElement(film : Film,
                     onCheckedValue : (Film) -> Unit,
-                    onImageClick : () -> Unit,
+                    onImageClick : (Film) -> Unit,
                     isChecked : Boolean,
                     hasChecker : Boolean = true,
                     genarelModifier : Modifier,
@@ -202,20 +205,17 @@ fun UserListElement(film : Film,
     Row(
         modifier = genarelModifier
     ) {
-        //IconButton(onClick = onImageClick,
-         //          modifier = Modifier.fillMaxWidth(0.4f)
-        //               .fillMaxHeight()
-         //           ) {
-            BasicAsyncImage(
-                url = film.url,
-                modifier = imageModifier.clickable { onImageClick() }
-            )
-      //  }
-        Column (
+        BasicAsyncImage(
+            url = film.url,
+            modifier = imageModifier.clickable { onImageClick(film) }
+        )
+
+        Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxHeight()
-                .fillMaxWidth(0.8f)) {
+                .fillMaxWidth(0.8f)
+        ) {
             TextInfoFilm(
                 filmName = film.name,
                 filmAutor = film.autor,
@@ -223,10 +223,11 @@ fun UserListElement(film : Film,
                 sizeMainText = 18,
                 sizeSmallText = 15,
                 smallTextModifier = smallTextModifier,
-                smallRowModifier = markRowModifier)
+                smallRowModifier = markRowModifier
+            )
         }
 
-        if(hasChecker) {
+        if (hasChecker) {
             Checkbox(
                 checked = isChecked,
                 onCheckedChange = { onCheckedValue(film) },
