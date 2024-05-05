@@ -9,7 +9,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import coil.compose.AsyncImage
 import com.example.planetcinema.ui.theme.PlanetCinemaTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,6 +21,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                ) {
+                  //  val orientation = LocalConfiguration.current.orientation
+
+                   // AddFilm(orientation)
                     PlanetCinemaApp()
                    // WheelPanel()
                     // SwapPanel()
@@ -35,10 +37,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     PlanetCinemaTheme (darkTheme = true) {
-        AsyncImage(
-            model = "https://example.com/image.jpg",
-            contentDescription = "Translated description of what the image contains"
-        )
-        //PlanetCinemaApp()
+       //AddFilm(2)
     }
 }

@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.planetcinema.layout.EditFilmCard
 import com.example.planetcinema.layout.Header
 import com.example.planetcinema.layout.NavBar
 import com.example.planetcinema.layout.SquareBackgroundHeader
@@ -21,7 +22,8 @@ import kotlinx.coroutines.launch
 enum class PlaneCinemaScreen() {
     Swapping,
     Wheel,
-    UserList
+    UserList,
+    Edit
 }
 
 @Composable
@@ -45,6 +47,9 @@ fun PlanetCinemaApp(
         }
         composable(route = PlaneCinemaScreen.UserList.name) {
             UserListScreen(PlaneCinemaScreen.UserList.ordinal, navController)
+        }
+        composable(route = PlaneCinemaScreen.Edit.name) {
+            EditScreen(navController)
         }
     }
 }
@@ -95,6 +100,15 @@ fun UserListScreen(
                }
            }
     );
-    UserListCard(orientation = orientation, viewModel = viewModel, coroutineScope = coroutineScope)
+    UserListCard(orientation = orientation, viewModel = viewModel, coroutineScope = coroutineScope, navController = navController)
     NavBar(selectedItem, orientation, navController)
+}
+
+@Composable
+fun EditScreen(
+    navController: NavHostController,
+) {
+    val orientation = LocalConfiguration.current.orientation
+
+    EditFilmCard(orientation = orientation, onNavigateUp = { navController.navigateUp() } )
 }

@@ -2,6 +2,7 @@ package com.example.planetcinema.layout
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.planetcinema.PlaneCinemaScreen
 import com.example.planetcinema.data.Film
 import com.example.planetcinema.view.UserListViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -31,18 +34,19 @@ import kotlin.math.ceil
 @Composable
 fun UserListCard(orientation: Int,
                  viewModel: UserListViewModel,
+                 navController: NavController,
                  coroutineScope: CoroutineScope
 ) {
 
     if(orientation == Configuration.ORIENTATION_PORTRAIT) {
-        UserListScrollPortrait(viewModel, coroutineScope)
+        UserListScrollPortrait(viewModel, coroutineScope, navController)
     } else {
-        UserListScrollLandscape(viewModel, coroutineScope)
+        UserListScrollLandscape(viewModel, coroutineScope, navController)
     }
 }
 
 @Composable
-private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : CoroutineScope) {
+private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : CoroutineScope, navController: NavController) {
 
     Column {
         Spacer(
@@ -68,9 +72,10 @@ private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : Corouti
                                 }
                             }
                         },
+                        onImageClick = { navController.navigate(PlaneCinemaScreen.Edit.name) },
                         isChecked = if(index != viewModel.uiState.filmList.size) viewModel.uiState.watchedFilms[index] else false,
                         hasChecker = index != viewModel.uiState.filmList.size,
-                        generalModifier =  Modifier
+                        genarelModifier =  Modifier
                             .fillMaxWidth(0.9f)
                             .height(170.dp)
                             .padding(top = 20.dp)
@@ -78,7 +83,7 @@ private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : Corouti
                             .background(Color(0xFF3E3F3F)),
                         imageModifier = Modifier
                             .fillMaxWidth(0.4f)
-                            .padding(20.dp),
+                            .padding(10.dp),
                         smallTextModifier = Modifier.padding(top = 10.dp),
                         markRowModifier = Modifier
                             .fillMaxSize(0.7f)
@@ -92,7 +97,7 @@ private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : Corouti
 
 
 @Composable
-private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : CoroutineScope) {
+private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : CoroutineScope, navController: NavController) {
     Column {
         Spacer(
             modifier =
@@ -108,7 +113,7 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                 .padding(horizontal = 20.dp)
         ) {
             val result = ceil(viewModel.uiState.filmList.size.toFloat() / 2.0f).toInt()
-            items(if (viewModel.uiState.filmList.size % 2 == 0) result + 1 else result) { index ->
+            items(if (viewModel.uiState.filmList.size  % 2 == 0) result + 1 else result) { index ->
                 Row {
                     UserListElement(
                         film = if (index < result) viewModel.uiState.filmList[index]
@@ -125,9 +130,10 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                                 }
                             }
                         },
+                        onImageClick = { navController.navigate(PlaneCinemaScreen.Edit.name) },
                         isChecked = if (index < result) viewModel.uiState.watchedFilms[index] else false,
                         hasChecker = index < result,
-                        generalModifier = Modifier
+                        genarelModifier = Modifier
                             .fillMaxWidth(0.5f)
                             .height(100.dp)
                             .padding(top = 20.dp, end = 10.dp)
@@ -158,9 +164,10 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                                     }
                                 }
                             },
+                            onImageClick = { navController.navigate(PlaneCinemaScreen.Edit.name) },
                             isChecked = if (secondIndex != index) viewModel.uiState.watchedFilms[secondIndex] else false,
                             hasChecker = secondIndex != index,
-                            generalModifier = Modifier
+                            genarelModifier = Modifier
                                 .fillMaxWidth()
                                 .height(100.dp)
                                 .padding(top = 20.dp, start = 10.dp)
@@ -184,20 +191,26 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
 @Composable
 fun UserListElement(film : Film,
                     onCheckedValue : (Film) -> Unit,
+                    onImageClick : () -> Unit,
                     isChecked : Boolean,
                     hasChecker : Boolean = true,
-                    generalModifier : Modifier,
+                    genarelModifier : Modifier,
                     imageModifier : Modifier,
                     smallTextModifier : Modifier,
                     markRowModifier: Modifier
 ) {
     Row(
-        modifier = generalModifier
+        modifier = genarelModifier
     ) {
-        BasicAsyncImage(
-            url = film.url,
-            modifier = imageModifier
-        )
+        //IconButton(onClick = onImageClick,
+         //          modifier = Modifier.fillMaxWidth(0.4f)
+        //               .fillMaxHeight()
+         //           ) {
+            BasicAsyncImage(
+                url = film.url,
+                modifier = imageModifier.clickable { onImageClick() }
+            )
+      //  }
         Column (
             verticalArrangement = Arrangement.Center,
             modifier = Modifier

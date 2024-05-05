@@ -147,7 +147,7 @@ fun AutoResizedText(
 }
 
 @Composable
-fun BasicAsyncImage(url : String, modifier: Modifier) {
+fun BasicAsyncImage(url : String, modifier: Modifier = Modifier) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(url)
