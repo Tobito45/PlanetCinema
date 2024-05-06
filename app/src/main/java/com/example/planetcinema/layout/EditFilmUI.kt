@@ -74,6 +74,7 @@ fun EditFilmCard(
                 value = viewModel.uiState.inputName,
                 onValueChange =  { viewModel.editDataFilm(newName = it)},
                 label = { Text("Name") },
+                isError = if(viewModel.uiState.isError && viewModel.uiState.inputName.isEmpty()) true else false,
                 modifier = Modifier.fillMaxWidth()
                     .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
             )
@@ -81,6 +82,7 @@ fun EditFilmCard(
                 value = viewModel.uiState.inputAutor,
                 onValueChange = { viewModel.editDataFilm(newAutor = it)},
                 label = { Text("Author") },
+                isError = if(viewModel.uiState.isError && viewModel.uiState.inputAutor.isEmpty()) true else false,
                 modifier = Modifier.fillMaxWidth()
                     .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
 
@@ -89,6 +91,7 @@ fun EditFilmCard(
                 value = viewModel.uiState.inputMark,
                 onValueChange =  { viewModel.editDataFilm(newMark = it)},
                 label = { Text("Mark") },
+                isError = if(viewModel.uiState.isError && viewModel.uiState.inputMark.isEmpty()) true else false,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier.fillMaxWidth()
                     .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
@@ -97,6 +100,7 @@ fun EditFilmCard(
             TextField(
                 value = viewModel.uiState.inputUrl,
                 onValueChange =  { viewModel.editDataFilm(newUrl = it)},
+                isError = if(viewModel.uiState.isError && viewModel.uiState.inputUrl.isEmpty()) true else false,
                 label = { Text("Image (url)") },
                 modifier = Modifier.fillMaxWidth()
                     .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
@@ -104,8 +108,8 @@ fun EditFilmCard(
             Button(
                 onClick = {
                           scope.launch {
-                              viewModel.updateFilm()
-                              onNavigateUp()
+                              if(viewModel.updateFilm())
+                                onNavigateUp()
                           }
                 },
                 shape = MaterialTheme.shapes.small,

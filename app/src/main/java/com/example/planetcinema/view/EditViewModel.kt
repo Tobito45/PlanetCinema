@@ -33,7 +33,7 @@ class EditViewModel(private val filmRepository: FilmsRepository) : ViewModel() {
              )
          }
     }
-    fun editDataFilm(newName: String? = null, newAutor: String? = null, newMark : String? = null, newUrl : String? = null) {
+    fun editDataFilm(newName: String? = null, newAutor: String? = null, newMark : String? = null, newUrl : String? = null, isError: Boolean = false) {
         var copy = uiState
         uiState = EditUiState(
             film = uiState.film,
@@ -41,12 +41,18 @@ class EditViewModel(private val filmRepository: FilmsRepository) : ViewModel() {
             inputAutor = newAutor ?: uiState.inputAutor,
             inputMark = newMark ?: uiState.inputMark,
             inputUrl = newUrl ?: uiState.inputUrl,
-            isAdding = uiState.isAdding
+            isAdding = uiState.isAdding,
+            isError = if(copy.isError) true else isError
         )
     }
 
-    suspend fun updateFilm() {
+    suspend fun updateFilm() : Boolean {
         val film = uiState.film
+        if(!verificate()) {
+            editDataFilm(isError = true)
+            return false
+        }
+
         if(film != null) {
             filmRepository.updateFilm(film.setNewInfo(
                 newName = uiState.inputName,
@@ -63,6 +69,12 @@ class EditViewModel(private val filmRepository: FilmsRepository) : ViewModel() {
             )
             )
         }
+        return true
+    }
+
+    fun verificate() : Boolean {
+        return uiState.inputName.isNotEmpty() && uiState.inputMark.isNotEmpty()
+                && uiState.inputAutor.isNotEmpty() && uiState.inputUrl.isNotEmpty()
     }
 }
 
@@ -72,5 +84,6 @@ class EditViewModel(private val filmRepository: FilmsRepository) : ViewModel() {
         val inputAutor: String = "",
         val inputMark: String = "",
         val inputUrl : String = "",
-        val isAdding : Boolean = false
+        val isAdding : Boolean = false,
+        var isError : Boolean = false
     )
