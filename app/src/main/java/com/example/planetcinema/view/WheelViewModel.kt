@@ -14,6 +14,8 @@ class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel() 
     var uiState by mutableStateOf(WheelUiState())
         private set
 
+
+
     init {
         viewModelScope.launch {
             filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
@@ -39,30 +41,42 @@ class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel() 
         return Random.nextInt(0, max)
     }
 
-    suspend fun addFilm() {
+    suspend fun addFilm(newFilm : Film) {
         val filmsInWheel = uiState.filmsInWheel
         filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
             uiState = WheelUiState(
                 films = updatedFilmList,
-                filmsInWheel = filmsInWheel + updatedFilmList.random(),
-                activeButtons = true
+                filmsInWheel = filmsInWheel + newFilm,
+                activeButtons = true,
+                showBottomSheet = true
             )
         }
     }
 
     suspend fun clearFilms() {
         filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
-            uiState = WheelUiState(
+            uiState =  WheelUiState(
                 films = updatedFilmList,
                 filmsInWheel = listOf(),
                 activeButtons = true
             )
         }
     }
+
+    fun showBottomSheet(active : Boolean) {
+        var copy = uiState
+        uiState = WheelUiState(
+            films = copy.films,
+            filmsInWheel = copy.filmsInWheel,
+            activeButtons = copy.activeButtons,
+            showBottomSheet = active
+        )
+    }
 }
 
 data class WheelUiState(
     val films : List<Film> = listOf(),
     val filmsInWheel : List<Film> = listOf(),
-    var activeButtons: Boolean = true
+    var activeButtons: Boolean = true,
+    var showBottomSheet : Boolean = false
 )
