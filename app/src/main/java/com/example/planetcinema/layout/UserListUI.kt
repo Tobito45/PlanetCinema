@@ -62,7 +62,7 @@ private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : Corouti
                 .fillMaxHeight(0.88f)
         ) {
             items(viewModel.uiState.filmList.size + 1) { index ->
-                    UserListElement(
+                UserListElement(
                         film = if (index != viewModel.uiState.filmList.size) viewModel.uiState.filmList[index]
                                 else Film(name = "#???#", autor = "#???#", mark = -1.0f, url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTXtOwPfVadN_I7YzkGc_CzjwOTNOvzjNxsg&usqp=CAU") ,
                         onCheckedValue = {
@@ -72,8 +72,10 @@ private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : Corouti
                                 }
                             }
                         },
-                        onImageClick = { navController.navigate("${PlaneCinemaScreen.Edit.name}/" +
-                                "${if(index != viewModel.uiState.filmList.size) viewModel.uiState.filmList[index].id else -1 }") },
+                        onImageClick = {
+                            if(!(index != viewModel.uiState.filmList.size) || viewModel.uiState.filmList[index].isCreated)
+                                navController.navigate("${PlaneCinemaScreen.Edit.name}/" +
+                                    "${if(index != viewModel.uiState.filmList.size) viewModel.uiState.filmList[index].id else -1 }") },
                         isChecked = if(index != viewModel.uiState.filmList.size) viewModel.uiState.watchedFilms[index] else false,
                         hasChecker = index != viewModel.uiState.filmList.size,
                         genarelModifier =  Modifier
@@ -131,8 +133,11 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                                 }
                             }
                         },
-                        onImageClick = { navController.navigate("${PlaneCinemaScreen.Edit.name}/" +
-                                "${if(index < result) viewModel.uiState.filmList[index].id else -1 }") },
+                        onImageClick = {
+                            if( !(index < result) || viewModel.uiState.filmList[index].isCreated)
+                                navController.navigate("${PlaneCinemaScreen.Edit.name}/" +
+                                    "${if(index < result) viewModel.uiState.filmList[index].id else -1 }")
+                            },
                         isChecked = if (index < result) viewModel.uiState.watchedFilms[index] else false,
                         hasChecker = index < result,
                         genarelModifier = Modifier
@@ -166,8 +171,11 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                                     }
                                 }
                             },
-                            onImageClick = { navController.navigate("${PlaneCinemaScreen.Edit.name}/" +
-                                    "${if(secondIndex != index) viewModel.uiState.filmList[secondIndex].id else -1 }") },
+                            onImageClick = {
+                                if(!(secondIndex != index) || viewModel.uiState.filmList[secondIndex].isCreated)
+                                    navController.navigate("${PlaneCinemaScreen.Edit.name}/" +
+                                        "${if(secondIndex != index) viewModel.uiState.filmList[secondIndex].id else -1 }")
+                            },
                             isChecked = if (secondIndex != index) viewModel.uiState.watchedFilms[secondIndex] else false,
                             hasChecker = secondIndex != index,
                             genarelModifier = Modifier

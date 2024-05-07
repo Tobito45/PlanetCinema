@@ -39,26 +39,26 @@ fun SwappingCard(orientation : Int,
     val coroutineScope = rememberCoroutineScope()
 
     if(orientation == Configuration.ORIENTATION_PORTRAIT) {
-        SwappingCardPortrait(uiState.actualFilm.name ,
-                             uiState.actualFilm.autor,
-                             uiState.actualFilm.mark.toString(),
-                             uiState.actualFilm.url,
-                             { coroutineScope.launch {
+        SwappingCardPortrait(filmName = uiState.actualFilm?.name ?: "None film" ,
+                             filmAutor = uiState.actualFilm?.autor ?: "#???#",
+                             filmMark = if (uiState.actualFilm?.mark.toString() == "null") "?" else uiState.actualFilm?.mark.toString(),
+                             filmUrl = uiState.actualFilm?.url ?: "https://static.thenounproject.com/png/1527904-200.png",
+                             onSwapRight =  { coroutineScope.launch {
                                  viewModel.checkFilm()
                              }
                              },
-                             { viewModel.generateNewFilm() }
+                             onSwapLeft = { viewModel.generateNewFilm() }
         )
     } else {
-       SwappingCardLandScape(uiState.actualFilm.name, //mb make to one object
-                              uiState.actualFilm.autor,
-                              uiState.actualFilm.mark.toString(),
-                              uiState.actualFilm.url,
-                               { coroutineScope.launch {
+       SwappingCardLandScape(filmName = uiState.actualFilm?.name ?: "None film" ,
+                           filmAutor = uiState.actualFilm?.autor ?: "#???#",
+                            filmMark = if (uiState.actualFilm?.mark.toString() == "null") "?" else uiState.actualFilm?.mark.toString(),
+                           filmUrl = uiState.actualFilm?.url ?: "https://static.thenounproject.com/png/1527904-200.png",
+                              onSwapRight =  { coroutineScope.launch {
                                    viewModel.checkFilm()
                                }
                                },
-                              { viewModel.generateNewFilm() }
+                             onSwapLeft =  { viewModel.generateNewFilm() }
         )
     }
 }
@@ -68,8 +68,8 @@ private fun SwappingCardLandScape(filmName : String,
                                   filmAutor : String,
                                   filmMark : String,
                                   filmUrl : String,
-                                  OnSwapRight : () -> Unit,
-                                  OnSwapLeft : () -> Unit) {
+                                  onSwapRight : () -> Unit,
+                                  onSwapLeft : () -> Unit) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -79,14 +79,14 @@ private fun SwappingCardLandScape(filmName : String,
 
         val left = CreateSwipeAction(
             OnSwipe = {
-                OnSwapLeft()
+                onSwapLeft()
                 Toast.makeText(mLocalContext, "Left", Toast.LENGTH_SHORT).show()
             },
             background = Color(0xFF640000)
         )
         val right = CreateSwipeAction(
             OnSwipe = {
-                OnSwapRight()
+                onSwapRight()
                 Toast.makeText(mLocalContext, "Right", Toast.LENGTH_SHORT).show()
             },
             background = Color(0xFF006400)
@@ -180,21 +180,21 @@ private fun SwappingCardPortrait(filmName : String,
                                  filmAutor : String,
                                  filmMark : String,
                                  filmUrl : String,
-                                 OnSwapRight : () -> Unit,
-                                 OnSwapLeft : () -> Unit)
+                                 onSwapRight : () -> Unit,
+                                 onSwapLeft : () -> Unit)
 {
     val mLocalContext = LocalContext.current
 
     val left = CreateSwipeAction(
         OnSwipe = {
-            OnSwapLeft()
+            onSwapLeft()
             Toast.makeText(mLocalContext, "Left", Toast.LENGTH_SHORT).show()
                   },
                 background = Color(0xFF640000)
     )
     val right = CreateSwipeAction(
         OnSwipe = {
-            OnSwapRight()
+            onSwapRight()
             Toast.makeText(mLocalContext, "Right", Toast.LENGTH_SHORT).show()
                   },
         background = Color(0xFF006400)

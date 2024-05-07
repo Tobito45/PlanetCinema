@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -131,6 +132,7 @@ private fun WheelCardPortarait(
             viewModel.uiState.films,
             onDismissRequest = { viewModel.showBottomSheet(false) },
             filmAdder = { scope.launch { viewModel.addFilm(it) } },
+            containFilm = { viewModel.containFilm(it) },
             onCloseButton = { viewModel.showBottomSheet(false)})
     }
 }
@@ -196,6 +198,7 @@ private fun WheelCardLandScape(
             viewModel.uiState.films,
             onDismissRequest = { viewModel.showBottomSheet(false) },
             filmAdder = { scope.launch { viewModel.addFilm(it) } },
+            containFilm = { viewModel.containFilm(it) },
             onCloseButton = { viewModel.showBottomSheet(false)})
     }
 }
@@ -288,7 +291,6 @@ fun Wheel(modifier: Modifier,
         scope = rememberCoroutineScope(),
     )
     val coroutineScope = rememberCoroutineScope()
-
     var res : Int = -1
     Box(modifier = modifier) {
         SpinWheelComponent(spinState)
@@ -310,9 +312,10 @@ fun Wheel(modifier: Modifier,
             enabled = films.isNotEmpty(),
             modifier = Modifier
                 .fillMaxSize()
-                .alpha(0.5f),
+                .alpha(0f),
         ) {Text (text = res.toString(), fontSize = 40.sp)}
     }
+
 }
 
 
@@ -321,6 +324,7 @@ fun Wheel(modifier: Modifier,
 fun WheelBottomSheet (sheetState: SheetState,
                       scope: CoroutineScope,
                       films : List<Film>,
+                      containFilm : (Film) -> Boolean,
                       onDismissRequest : () -> Unit,
                       onCloseButton : () -> Unit,
                       filmAdder : (Film) -> Unit
@@ -335,15 +339,19 @@ fun WheelBottomSheet (sheetState: SheetState,
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(10.dp).verticalScroll(rememberScrollState()),
+                .padding(10.dp)
+                .verticalScroll(rememberScrollState()),
         ) {
 
             films.forEach { film ->
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 10.dp).fillMaxWidth().clip(RoundedCornerShape(10.dp))
-                        .background( Color(0xFF1B1C1F))
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Color(0xFF1B1C1F))
                 ) {
                     Text(
                         text = film.name,
@@ -357,7 +365,7 @@ fun WheelBottomSheet (sheetState: SheetState,
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.padding(10.dp)
                         ) {
-                        Icon(imageVector = Icons.Filled.Add, contentDescription = null,
+                        Icon(imageVector = if(containFilm(film)) Icons.Filled.Done else Icons.Filled.Add, contentDescription = null,
                             tint = Color.White)
                     }
                 }

@@ -13,7 +13,8 @@ data class Film (
     var name : String,
     var autor : String,
     var mark : Float,
-    var url : String
+    var url : String,
+    val isCreated : Boolean = false
 ) {
     fun take() : Film {
         takeIt = true

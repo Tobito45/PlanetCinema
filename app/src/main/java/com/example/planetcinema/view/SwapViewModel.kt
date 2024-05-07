@@ -13,31 +13,25 @@ import kotlinx.coroutines.launch
 class SwapViewModel(
     private val filmRepository: FilmsRepository
 ) : ViewModel() {
-    var uiState by mutableStateOf(SpinUiState())
+    var uiState by mutableStateOf(SpinUiState(null))
         private set
     init {
-        viewModelScope.launch {
-            val randomFilms = filmRepository.getAllFilmsStream().first();
-            if(!randomFilms.isEmpty())
-                uiState = SpinUiState(actualFilm = randomFilms.random())
-        }
+        generateNewFilm()
     }
 
     fun generateNewFilm() {
         viewModelScope.launch {
-            uiState = SpinUiState(
-                actualFilm = filmRepository.getAllFilmsStream()
-                    .first().random()
-            )
+            val randomFilms = filmRepository.getNoneCheckedFilmsStream().first();
+            uiState = SpinUiState(actualFilm = if(randomFilms.isEmpty()) null else randomFilms.random())
         }
     }
 
     suspend fun checkFilm() {
-        filmRepository.updateFilm(uiState.actualFilm.take())
-        uiState = SpinUiState(
-            actualFilm = filmRepository.getAllFilmsStream()
-                .first().random()
-        )
+        val actualFilm = uiState.actualFilm
+        if (actualFilm != null) {
+            filmRepository.updateFilm(actualFilm.take())
+        }
+        generateNewFilm()
     }
 
     companion object {
@@ -46,5 +40,5 @@ class SwapViewModel(
 }
 
 data class SpinUiState(
-    val actualFilm : Film = Film(name = "ERROR", id = -1, autor = "ERROR", url = "https://cdn.pixabay.com/photo/2017/02/12/21/29/false-2061132_640.png" , mark = 0.0f,)
+    val actualFilm : Film?
 )

@@ -16,6 +16,8 @@ interface FilmDao {
 
     @Query("SELECT * from films WHERE takeIt = 1")
     fun getAllCheckedFilms(): Flow<List<Film>>
+    @Query("SELECT * from films WHERE takeIt = 0")
+    fun getAllNoneCheckedFilms(): Flow<List<Film>>
 
     @Query("SELECT * from films WHERE id = :id")
     fun getFilm(id: Int): Flow<Film>

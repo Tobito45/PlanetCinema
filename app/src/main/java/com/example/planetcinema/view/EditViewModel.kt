@@ -65,7 +65,8 @@ class EditViewModel(private val filmRepository: FilmsRepository) : ViewModel() {
                 autor = uiState.inputAutor,
                 mark = "%.1f".format(uiState.inputMark.replace(",", ".").toFloatOrNull() ?: 0f ).replace(",", ".").toFloat(),
                 url = uiState.inputUrl,
-                takeIt = true
+                takeIt = true,
+                isCreated = true
             )
             )
         }

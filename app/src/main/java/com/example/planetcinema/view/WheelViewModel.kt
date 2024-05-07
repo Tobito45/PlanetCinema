@@ -46,12 +46,14 @@ class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel() 
         filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
             uiState = WheelUiState(
                 films = updatedFilmList,
-                filmsInWheel = filmsInWheel + newFilm,
+                filmsInWheel = if(containFilm(newFilm)) filmsInWheel - newFilm  else filmsInWheel + newFilm,
                 activeButtons = true,
                 showBottomSheet = true
             )
         }
     }
+
+    fun containFilm(film: Film) : Boolean = uiState.filmsInWheel.contains(film)
 
     suspend fun clearFilms() {
         filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
