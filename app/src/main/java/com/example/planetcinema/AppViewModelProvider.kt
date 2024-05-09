@@ -13,7 +13,8 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             SwapViewModel(
-                planetCinemaApplication().container.filmsRepository
+                planetCinemaApplication().container.filmsRepository,
+                planetCinemaApplication().container.filmsFireRepository
             )
         }
         initializer {

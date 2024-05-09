@@ -110,9 +110,6 @@ private fun WheelCardPortarait(
 
             WheelButton(
                 OnButtonClicked = { viewModel.showBottomSheet(true) },
-                // { scope.launch {
-                    //viewModel.addFilm()
-                //} },
                 isEnable = viewModel.uiState.activeButtons,
                 textButton = "Add movie",
                 buttonIcon = Icons.Filled.Add
@@ -163,9 +160,6 @@ private fun WheelCardLandScape(
 
             WheelButton(
                 OnButtonClicked = { viewModel.showBottomSheet(true) },
-                // { scope.launch {
-                //viewModel.addFilm()
-                //} },
                 isEnable = viewModel.uiState.activeButtons,
                 textButton = "Add movie",
                 buttonIcon =  Icons.Filled.Add,

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("com.google.devtools.ksp") version "1.9.20-1.0.14"
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -82,6 +83,10 @@ dependencies {
     implementation(libs.androidx.core.ktx.v1130)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-analytics")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

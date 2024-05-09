@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "526327549355",
+    "firebase_url": "https://planetcinema-88bb9-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "planetcinema-88bb9",
+    "storage_bucket": "planetcinema-88bb9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:526327549355:android:33ea81e563cceca7ce56ee",
+        "android_client_info": {
+          "package_name": "com.example.planetcinema"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5qOoAngUoc_FmnyuDWSVudE0N1It0m9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

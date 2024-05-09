@@ -7,11 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.planetcinema.data.Film
 import com.example.planetcinema.data.FilmsRepository
+import com.example.planetcinema.data.firebase.FilmFirebaseRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SwapViewModel(
-    private val filmRepository: FilmsRepository
+    private val filmLocalRepository: FilmsRepository,
+    private val filmFireRepository: FilmFirebaseRepository
 ) : ViewModel() {
     var uiState by mutableStateOf(SpinUiState(null))
         private set
@@ -21,7 +23,8 @@ class SwapViewModel(
 
     fun generateNewFilm() {
         viewModelScope.launch {
-            val randomFilms = filmRepository.getNoneCheckedFilmsStream().first();
+            val filmsOfUser = filmLocalRepository.getAllFilmsStream().first()
+            val randomFilms = filmFireRepository.getAllFilmWithout(filmsOfUser)
             uiState = SpinUiState(actualFilm = if(randomFilms.isEmpty()) null else randomFilms.random())
         }
     }
@@ -29,7 +32,7 @@ class SwapViewModel(
     suspend fun checkFilm() {
         val actualFilm = uiState.actualFilm
         if (actualFilm != null) {
-            filmRepository.updateFilm(actualFilm.take())
+            filmLocalRepository.insertFilm(actualFilm.take())
         }
         generateNewFilm()
     }
