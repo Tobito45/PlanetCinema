@@ -80,14 +80,14 @@ private fun SwappingCardLandScape(filmName : String,
         val left = CreateSwipeAction(
             OnSwipe = {
                 onSwapLeft()
-                Toast.makeText(mLocalContext, "Left", Toast.LENGTH_SHORT).show()
+                Toast.makeText(mLocalContext, "Next film", Toast.LENGTH_SHORT).show()
             },
             background = Color(0xFF640000)
         )
         val right = CreateSwipeAction(
             OnSwipe = {
                 onSwapRight()
-                Toast.makeText(mLocalContext, "Right", Toast.LENGTH_SHORT).show()
+                Toast.makeText(mLocalContext, "Film saved", Toast.LENGTH_SHORT).show()
             },
             background = Color(0xFF006400)
 
@@ -188,14 +188,14 @@ private fun SwappingCardPortrait(filmName : String,
     val left = CreateSwipeAction(
         OnSwipe = {
             onSwapLeft()
-            Toast.makeText(mLocalContext, "Left", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mLocalContext, "Next film", Toast.LENGTH_SHORT).show()
                   },
                 background = Color(0xFF640000)
     )
     val right = CreateSwipeAction(
         OnSwipe = {
             onSwapRight()
-            Toast.makeText(mLocalContext, "Right", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mLocalContext, "Film saved", Toast.LENGTH_SHORT).show()
                   },
         background = Color(0xFF006400)
     )

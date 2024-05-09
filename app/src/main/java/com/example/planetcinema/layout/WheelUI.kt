@@ -1,6 +1,7 @@
 package com.example.planetcinema.layout
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -287,27 +289,28 @@ fun Wheel(modifier: Modifier,
     val coroutineScope = rememberCoroutineScope()
     var res : Int = -1
     Box(modifier = modifier) {
+        val mLocalContext = LocalContext.current
+
         SpinWheelComponent(spinState)
         Button(
             onClick = {
-               coroutineScope.launch {
+
+                coroutineScope.launch {
                     activeButtons(false)
                     spinState.launchInfinite()
                     delay(2000)
-                    spinState.stoppingWheel(generateNumber(films.size))
+                    val randomNumber = generateNumber(films.size)
+                    spinState.stoppingWheel(randomNumber)
                     delay(8000)
                     activeButtons(true)
+                    Toast.makeText(mLocalContext, "Random film is: " + films[randomNumber].name, Toast.LENGTH_LONG).show()
                 }
             },
-            colors = ButtonDefaults.buttonColors(
-              //  containerColor = Color.Transparent,
-              //  disabledContentColor = Color.Transparent
-                ),
             enabled = films.isNotEmpty(),
             modifier = Modifier
                 .fillMaxSize()
                 .alpha(0f),
-        ) {Text (text = res.toString(), fontSize = 40.sp)}
+        ) {}
     }
 
 }
