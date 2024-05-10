@@ -48,11 +48,9 @@ fun SwappingCard(orientation : Int,
     val coroutineScope = rememberCoroutineScope()
     val rangeSliderState = remember {
         RangeSliderState(
-            activeRangeStart = 0.0f,
-            activeRangeEnd = 10.0f,
-            valueRange = 0f..10f,
-            onValueChangeFinished = {
-            }
+            activeRangeStart = viewFilterModel.uiState.filmRange.start,
+            activeRangeEnd = viewFilterModel.uiState.filmRange.endInclusive,
+            valueRange = viewFilterModel.uiState.filmRange,
         )
     }
 
@@ -196,9 +194,7 @@ private fun SwappingCardLandScape(viewSwapModel: SwapViewModel,
         )
     }
     if (viewFilterModel.uiState.showBottomSheet) {
-        FilterSheet(sheetState = sheetState, scope = scope, rangeSliderState = sliderState,
-            onDismissRequest = { viewFilterModel.resetUiState(active = false)  },
-            onCloseButton = { viewFilterModel.resetUiState(active = false) })
+        FilterSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = sliderState)
     }
 }
 
@@ -307,9 +303,7 @@ private fun SwappingCardPortrait(viewSwapModel: SwapViewModel,
         }
     }
     if (viewFilterModel.uiState.showBottomSheet) {
-        FilterSheet(sheetState = sheetState, scope = scope, rangeSliderState = sliderState,
-            onDismissRequest = { viewFilterModel.resetUiState(active = false) },
-            onCloseButton = { viewFilterModel.resetUiState(active = false) })
+        FilterSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = sliderState)
     }
 }
 

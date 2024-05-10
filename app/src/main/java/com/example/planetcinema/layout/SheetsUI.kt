@@ -1,6 +1,7 @@
 package com.example.planetcinema.layout
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -25,7 +26,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.RangeSliderState
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SliderColors
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +39,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.planetcinema.data.Film
+import com.example.planetcinema.view.FilterViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -76,32 +81,43 @@ fun WheelBottomSheet (sheetState: SheetState,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterSheet (sheetState: SheetState,
+fun FilterSheet (viewModel: FilterViewModel,
+                 sheetState: SheetState,
                  scope: CoroutineScope,
                  rangeSliderState : RangeSliderState,
-                 onDismissRequest : () -> Unit,
-                 onCloseButton : () -> Unit,
 ) {
     BasicSheet(
         sheetState = sheetState,
         scope = scope,
-        onDismissRequest = onDismissRequest,
-        onCloseButton = onCloseButton) {
+        onDismissRequest = {viewModel.resetUiState(active = false)} ,
+        onCloseButton = {viewModel.resetUiState(active = false)} ) {
         BasicSheetCard {
             BasicSheetText(text = "Sort films by alphabetic of names")
-            Checkbox(checked = false, onCheckedChange = {}, modifier = Modifier.padding(10.dp))
+            Checkbox(checked = viewModel.uiState.isAbcFilmSorted, onCheckedChange = {viewModel.resetUiState(
+                isAbcFilmSorted = it)}, modifier = Modifier.padding(10.dp))
         }
         BasicSheetCard {
             BasicSheetText(text = "Sort films by alphabetic of authors")
-            Checkbox(checked = false, onCheckedChange = {}, modifier = Modifier.padding(10.dp))
+            Checkbox(checked = viewModel.uiState.isAbcAutorSorted, onCheckedChange = {viewModel.resetUiState(
+                isAbcAutorSorted = it)}, modifier = Modifier.padding(10.dp))
         }
         BasicSheetCard {
             BasicSheetText(text = "Sort films by marks")
             Column {
-                val rangeStart = "%.2f".format(rangeSliderState.activeRangeStart)
-                val rangeEnd = "%.2f".format(rangeSliderState.activeRangeEnd)
+                val rangeStart = "%.2f".format(rangeSliderState.activeRangeStart).replace(",",".")
+                val rangeEnd = "%.2f".format(rangeSliderState.activeRangeEnd).replace(",",".")
+                val endInteractionSource = remember { MutableInteractionSource() }
+                val colors: SliderColors = SliderDefaults.colors()
                 RangeSlider(
                     state = rangeSliderState,
+                    endThumb =  {
+                        SliderDefaults.Thumb(
+                            interactionSource = endInteractionSource,
+                            colors = colors,
+                            enabled = true
+                        )
+                        viewModel.resetUiState(filmRange = rangeStart.toFloat()..rangeEnd.toFloat())
+                    },
                     modifier = Modifier
                         .semantics { contentDescription = "Localized Description" }
                         .padding(5.dp)
