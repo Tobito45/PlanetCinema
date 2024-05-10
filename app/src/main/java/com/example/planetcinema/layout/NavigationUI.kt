@@ -4,17 +4,13 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,7 +49,7 @@ fun NavBar(selectedItem: Int, orientation : Int, navController: NavController) {
                 NavigationBarItem(
                     icon = { Icon(painter = painterResource(id = resourceId),
                         contentDescription = null,
-                        modifier = Modifier.fillMaxSize(0.5f),
+                        modifier = Modifier.size(50.dp),
                         tint = Color.White) },
                     selected = selectedItem == index,
                     onClick = {

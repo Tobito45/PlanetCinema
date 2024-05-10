@@ -60,7 +60,6 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
 
     implementation(libs.numberpicker)
     implementation(libs.kotlinx.collections.immutable)
@@ -81,6 +80,9 @@ dependencies {
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.core.ktx.v1130)
+    implementation(libs.androidx.material3)
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha07")
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 

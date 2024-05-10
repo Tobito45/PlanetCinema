@@ -37,11 +37,19 @@ class SwapViewModel(
         generateNewFilm()
     }
 
+    fun showBottomSheet() {
+        var copy = uiState
+        uiState = SpinUiState(
+            actualFilm = copy.actualFilm,
+        )
+    }
+
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }
+
 }
 
 data class SpinUiState(
-    val actualFilm : Film?
+    val actualFilm : Film?,
 )

@@ -2,7 +2,6 @@ package com.example.planetcinema.layout
 
 import android.content.res.Configuration
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,27 +13,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -314,81 +308,3 @@ fun Wheel(modifier: Modifier,
     }
 
 }
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun WheelBottomSheet (sheetState: SheetState,
-                      scope: CoroutineScope,
-                      films : List<Film>,
-                      containFilm : (Film) -> Boolean,
-                      onDismissRequest : () -> Unit,
-                      onCloseButton : () -> Unit,
-                      filmAdder : (Film) -> Unit
-) {
-    ModalBottomSheet(
-        onDismissRequest = onDismissRequest,
-        sheetState = sheetState
-    ) {
-        // Sheet content
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(10.dp)
-                .verticalScroll(rememberScrollState()),
-        ) {
-
-            films.forEach { film ->
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Color(0xFF1B1C1F))
-                ) {
-                    Text(
-                        text = film.name,
-                        modifier = Modifier.padding(10.dp)
-                    )
-                    Button(onClick = { filmAdder(film) },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF3E3F3F),
-                            disabledContainerColor = Color(0xFF181818),
-                        ),
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.padding(10.dp)
-                        ) {
-                        Icon(imageVector = if(containFilm(film)) Icons.Filled.Done else Icons.Filled.Add, contentDescription = null,
-                            tint = Color.White)
-                    }
-                }
-            }
-
-
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF3E3F3F),
-                    disabledContainerColor = Color(0xFF181818),
-                ),
-                shape = RoundedCornerShape(10.dp),
-                onClick = {
-                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                    if (!sheetState.isVisible) {
-                        onCloseButton()
-                    }
-                }
-            },
-                modifier = Modifier.padding(top = 10.dp, bottom = 30.dp)) {
-                Text(text = "Hide",
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White)
-            }
-        }
-    }
-}
-
-

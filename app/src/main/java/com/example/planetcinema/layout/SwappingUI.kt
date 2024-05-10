@@ -12,8 +12,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.RangeSliderState
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,48 +31,65 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.planetcinema.AppViewModelProvider
 import com.example.planetcinema.R
 import com.example.planetcinema.swipe.CreateSwipeAction
+import com.example.planetcinema.view.FilterViewModel
 import com.example.planetcinema.view.SwapViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeableActionsBox
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwappingCard(orientation : Int,
-                 viewModel: SwapViewModel = viewModel(factory = AppViewModelProvider.Factory)
+                 viewSwapModel: SwapViewModel = viewModel(factory = AppViewModelProvider.Factory),
+                 viewFilterModel: FilterViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val uiState = viewModel.uiState;
+    val sheetState = rememberModalBottomSheetState()
     val coroutineScope = rememberCoroutineScope()
+    val rangeSliderState = remember {
+        RangeSliderState(
+            activeRangeStart = 0.0f,
+            activeRangeEnd = 10.0f,
+            valueRange = 0f..10f,
+            onValueChangeFinished = {
+            }
+        )
+    }
 
-    if(orientation == Configuration.ORIENTATION_PORTRAIT) {
-        SwappingCardPortrait(filmName = uiState.actualFilm?.name ?: "None film" ,
-                             filmAutor = uiState.actualFilm?.autor ?: "#???#",
-                             filmMark = if (uiState.actualFilm?.mark.toString() == "null") "?" else uiState.actualFilm?.mark.toString(),
-                             filmUrl = uiState.actualFilm?.url ?: "https://static.thenounproject.com/png/1527904-200.png",
-                             onSwapRight =  { coroutineScope.launch {
-                                 viewModel.checkFilm()
-                             }
-                             },
-                             onSwapLeft = { viewModel.generateNewFilm() }
+    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        SwappingCardPortrait(viewSwapModel = viewSwapModel, viewFilterModel = viewFilterModel,
+            scope = coroutineScope,
+            sheetState = sheetState,
+            sliderState = rangeSliderState,
+            onSwapRight = {
+                coroutineScope.launch {
+                    viewSwapModel.checkFilm()
+                }
+            },
+            onSwapLeft = { viewSwapModel.generateNewFilm() }
         )
     } else {
-       SwappingCardLandScape(filmName = uiState.actualFilm?.name ?: "None film" ,
-                           filmAutor = uiState.actualFilm?.autor ?: "#???#",
-                            filmMark = if (uiState.actualFilm?.mark.toString() == "null") "?" else uiState.actualFilm?.mark.toString(),
-                           filmUrl = uiState.actualFilm?.url ?: "https://static.thenounproject.com/png/1527904-200.png",
-                              onSwapRight =  { coroutineScope.launch {
-                                   viewModel.checkFilm()
-                               }
-                               },
-                             onSwapLeft =  { viewModel.generateNewFilm() }
+        SwappingCardLandScape(viewSwapModel = viewSwapModel, viewFilterModel = viewFilterModel,
+            scope = coroutineScope,
+            sheetState = sheetState,
+            onSwapRight = {
+                coroutineScope.launch {
+                    viewSwapModel.checkFilm()
+                }
+            },
+            sliderState = rangeSliderState,
+            onSwapLeft = { viewSwapModel.generateNewFilm() }
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SwappingCardLandScape(filmName : String,
-                                  filmAutor : String,
-                                  filmMark : String,
-                                  filmUrl : String,
+private fun SwappingCardLandScape(viewSwapModel: SwapViewModel,
+                                  viewFilterModel: FilterViewModel,
+                                  sheetState: SheetState,
+                                  sliderState: RangeSliderState,
+                                  scope: CoroutineScope,
                                   onSwapRight : () -> Unit,
                                   onSwapLeft : () -> Unit) {
     Row(
@@ -123,7 +145,7 @@ private fun SwappingCardLandScape(filmName : String,
                         .background(Color(0xFF3E3F3F))
                 ) {
                     BasicAsyncImage(
-                        url = filmUrl,
+                        url = viewSwapModel.uiState.actualFilm?.url ?: "https://static.thenounproject.com/png/1527904-200.png",
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
                             .fillMaxHeight(0.9f)
@@ -138,9 +160,9 @@ private fun SwappingCardLandScape(filmName : String,
                             .padding(start = 15.dp)
                     ) {
                         TextInfoFilm(
-                            filmName = filmName,
-                            filmAutor = filmAutor,
-                            filmMark = filmMark,
+                            filmName = viewSwapModel.uiState.actualFilm?.name ?: "None film",
+                            filmAutor =  viewSwapModel.uiState.actualFilm?.autor ?: "#???#",
+                            filmMark = if (viewSwapModel.uiState.actualFilm?.mark.toString() == "null") "?" else viewSwapModel.uiState.actualFilm?.mark.toString(),
                             sizeMainText = 25,
                             sizeSmallText = 20,
                             smallTextModifier = Modifier.padding(top = 10.dp),
@@ -173,13 +195,20 @@ private fun SwappingCardLandScape(filmName : String,
                 .padding(8.dp)
         )
     }
+    if (viewFilterModel.uiState.showBottomSheet) {
+        FilterSheet(sheetState = sheetState, scope = scope, rangeSliderState = sliderState,
+            onDismissRequest = { viewFilterModel.resetUiState(active = false)  },
+            onCloseButton = { viewFilterModel.resetUiState(active = false) })
+    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SwappingCardPortrait(filmName : String,
-                                 filmAutor : String,
-                                 filmMark : String,
-                                 filmUrl : String,
+private fun SwappingCardPortrait(viewSwapModel: SwapViewModel,
+                                 viewFilterModel: FilterViewModel,
+                                 sheetState: SheetState,
+                                 scope: CoroutineScope,
+                                 sliderState: RangeSliderState,
                                  onSwapRight : () -> Unit,
                                  onSwapLeft : () -> Unit)
 {
@@ -215,7 +244,7 @@ private fun SwappingCardPortrait(filmName : String,
         ) {
            Column (horizontalAlignment = Alignment.CenterHorizontally) {
            BasicAsyncImage(
-               url = filmUrl,
+               url = viewSwapModel.uiState.actualFilm?.url ?: "https://static.thenounproject.com/png/1527904-200.png",
                modifier = Modifier
                    .fillMaxWidth(0.8f)
                    .fillMaxHeight(0.75f)
@@ -234,9 +263,9 @@ private fun SwappingCardPortrait(filmName : String,
                         .padding(8.dp)
                 ) {
                     TextInfoFilm(
-                        filmName = filmName,
-                        filmAutor = filmAutor,
-                        filmMark = filmMark,
+                        filmName = viewSwapModel.uiState.actualFilm?.name ?: "None film",
+                        filmAutor =  viewSwapModel.uiState.actualFilm?.autor ?: "#???#",
+                        filmMark = if (viewSwapModel.uiState.actualFilm?.mark.toString() == "null") "?" else viewSwapModel.uiState.actualFilm?.mark.toString(),
                         sizeMainText = 20,
                         sizeSmallText = 15,
                         smallTextHorizontalArrangement = Arrangement.End,
@@ -277,6 +306,11 @@ private fun SwappingCardPortrait(filmName : String,
             )
         }
     }
-
+    if (viewFilterModel.uiState.showBottomSheet) {
+        FilterSheet(sheetState = sheetState, scope = scope, rangeSliderState = sliderState,
+            onDismissRequest = { viewFilterModel.resetUiState(active = false) },
+            onCloseButton = { viewFilterModel.resetUiState(active = false) })
+    }
 }
+
 

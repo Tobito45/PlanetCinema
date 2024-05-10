@@ -19,6 +19,8 @@ import com.example.planetcinema.layout.SwappingCard
 import com.example.planetcinema.layout.UserListCard
 import com.example.planetcinema.layout.WheelCard
 import com.example.planetcinema.view.EditViewModel
+import com.example.planetcinema.view.FilterViewModel
+import com.example.planetcinema.view.SwapViewModel
 import com.example.planetcinema.view.UserListViewModel
 import kotlinx.coroutines.launch
 
@@ -66,13 +68,15 @@ fun PlanetCinemaApp(
 fun SwapScreen(
     selectedItem : Int,
     navController: NavHostController,
+    viewSwapModel: SwapViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewFilterModel: FilterViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val orientation = LocalConfiguration.current.orientation
     val coroutineScope = rememberCoroutineScope()
 
-    SquareBackgroundHeader(orientation, 0);
-    Header("Discover", { /* TODO */});
-    SwappingCard(orientation)
+    SquareBackgroundHeader(orientation = orientation, menu = 0);
+    Header("Discover", onIconClick = {viewFilterModel.resetUiState(active = true)});
+    SwappingCard(orientation = orientation, viewSwapModel = viewSwapModel)
     NavBar(selectedItem, orientation, navController)
 }
 
