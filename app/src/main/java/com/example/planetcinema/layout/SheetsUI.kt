@@ -88,22 +88,19 @@ fun FilterSheet (viewModel: FilterViewModel,
                  sheetState: SheetState,
                  scope: CoroutineScope,
                  rangeSliderState : RangeSliderState,
+                 onCloseButton: () -> Unit = {}
 ) {
     BasicSheet(
         sheetState = sheetState,
         scope = scope,
-        onDismissRequest = {viewModel.resetUiState(active = false)} ,
-        onCloseButton = {viewModel.resetUiState(active = false)} ) {
-        /*BasicSheetCard {
-            BasicSheetText(text = "Sort films by alphabetic of names")
-            Checkbox(checked = viewModel.uiState.isAbcFilmSorted, onCheckedChange = {viewModel.resetUiState(
-                isAbcFilmSorted = it)}, modifier = Modifier.padding(10.dp))
-        }
-        BasicSheetCard {
-            BasicSheetText(text = "Sort films by alphabetic of authors")
-            Checkbox(checked = viewModel.uiState.isAbcAutorSorted, onCheckedChange = {viewModel.resetUiState(
-                isAbcAutorSorted = it)}, modifier = Modifier.padding(10.dp))
-        }*/
+        onDismissRequest = {
+            viewModel.resetUiState(active = false)
+            onCloseButton()
+                           } ,
+        onCloseButton = {
+            viewModel.resetUiState(active = false)
+            onCloseButton()
+        } ) {
         BasicSheetCard {
             BasicSheetText(text = "Sort films contains ", modifier = Modifier.fillMaxSize(0.5f))
             TextField(
@@ -111,6 +108,7 @@ fun FilterSheet (viewModel: FilterViewModel,
                 onValueChange =  { viewModel.resetUiState(filmContainsWord = it)},
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                singleLine = true,
                 modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
             )
         }
@@ -121,14 +119,15 @@ fun FilterSheet (viewModel: FilterViewModel,
                 onValueChange =  { viewModel.resetUiState(autorContainsWord = it)},
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                singleLine = true,
                 modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
             )
         }
         BasicSheetCard {
             BasicSheetText(text = "Sort films by marks", modifier = Modifier.fillMaxSize(0.5f))
             Column {
-                val rangeStart = "%.2f".format(rangeSliderState.activeRangeStart).replace(",",".")
-                val rangeEnd = "%.2f".format(rangeSliderState.activeRangeEnd).replace(",",".")
+                val rangeStart = "%.1f".format(rangeSliderState.activeRangeStart).replace(",",".")
+                val rangeEnd = "%.1f".format(rangeSliderState.activeRangeEnd).replace(",",".")
                 val endInteractionSource = remember { MutableInteractionSource() }
                 val colors: SliderColors = SliderDefaults.colors()
                 RangeSlider(

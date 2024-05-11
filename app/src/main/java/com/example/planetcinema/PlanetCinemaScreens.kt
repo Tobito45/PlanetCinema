@@ -22,7 +22,7 @@ import com.example.planetcinema.view.EditViewModel
 import com.example.planetcinema.view.FilterViewModel
 import com.example.planetcinema.view.SwapViewModel
 import com.example.planetcinema.view.UserListViewModel
-import kotlinx.coroutines.launch
+import com.example.planetcinema.view.WheelViewModel
 
 
 enum class PlaneCinemaScreen() {
@@ -72,10 +72,9 @@ fun SwapScreen(
     viewFilterModel: FilterViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val orientation = LocalConfiguration.current.orientation
-    val coroutineScope = rememberCoroutineScope()
 
     SquareBackgroundHeader(orientation = orientation, menu = 0);
-    Header("Discover", onIconClick = {viewFilterModel.resetUiState(active = true)});
+    Header("Discover", onIconClick = {viewFilterModel.resetUiState(active = true)})
     SwappingCard(orientation = orientation, viewSwapModel = viewSwapModel)
     NavBar(selectedItem, orientation, navController)
 }
@@ -84,13 +83,14 @@ fun SwapScreen(
 fun WheelScreen(
     selectedItem : Int,
     navController: NavHostController,
+    viewFilterModel: FilterViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewWheelModel: WheelViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val orientation = LocalConfiguration.current.orientation
-    val coroutineScope = rememberCoroutineScope()
 
     SquareBackgroundHeader(orientation, 1);
-    Header("Select a movie", { /* TODO */});
-    WheelCard(orientation)
+    Header("Select a movie", onIconClick = {viewFilterModel.resetUiState(active = true)})
+    WheelCard(orientation = orientation,viewWheelModel = viewWheelModel, viewFilterModel = viewFilterModel)
     NavBar(selectedItem, orientation, navController)
 }
 
@@ -98,20 +98,17 @@ fun WheelScreen(
 fun UserListScreen(
     selectedItem : Int,
     navController: NavHostController,
-    viewModel: UserListViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewUserModel: UserListViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewFilterModel: FilterViewModel = viewModel(factory = AppViewModelProvider.Factory)
+
 ) {
     val orientation = LocalConfiguration.current.orientation
     val coroutineScope = rememberCoroutineScope()
 
 
     SquareBackgroundHeader(orientation, 2);
-    Header("All movies",
-           onIconClick = { coroutineScope.launch {
-                viewModel.sortInOrderWatch()
-               }
-           }
-    );
-    UserListCard(orientation = orientation, viewModel = viewModel,
+    Header("All movies", onIconClick = {viewFilterModel.resetUiState(active = true)})
+    UserListCard(orientation = orientation, viewUserModel = viewUserModel, viewFilterModel = viewFilterModel,
         coroutineScope = coroutineScope,
         navController = navController)
     NavBar(selectedItem, orientation, navController)

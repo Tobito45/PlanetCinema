@@ -16,7 +16,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.RangeSliderState
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,28 +30,59 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.planetcinema.PlaneCinemaScreen
 import com.example.planetcinema.data.Film
+import com.example.planetcinema.view.FilterViewModel
 import com.example.planetcinema.view.UserListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserListCard(orientation: Int,
-                 viewModel: UserListViewModel,
+                 viewUserModel: UserListViewModel,
+                 viewFilterModel: FilterViewModel,
                  navController: NavController,
                  coroutineScope: CoroutineScope
 ) {
+    val sheetState = rememberModalBottomSheetState()
+    val rangeSliderState = remember {
+        RangeSliderState(
+            activeRangeStart = viewFilterModel.uiState.filmRange.start,
+            activeRangeEnd = viewFilterModel.uiState.filmRange.endInclusive,
+            valueRange = viewFilterModel.uiState.filmRange,
+        )
+    }
 
     if(orientation == Configuration.ORIENTATION_PORTRAIT) {
-        UserListScrollPortrait(viewModel, coroutineScope, navController)
+        UserListScrollPortrait(
+            viewUserModel = viewUserModel,
+            viewFilterModel = viewFilterModel,
+            scope =  coroutineScope,
+            rangeSliderState = rangeSliderState,
+            sheetState = sheetState,
+            navController = navController)
     } else {
-        UserListScrollLandscape(viewModel, coroutineScope, navController)
+        UserListScrollLandscape(
+            viewUserModel = viewUserModel,
+            viewFilterModel = viewFilterModel,
+            scope =  coroutineScope,
+            rangeSliderState = rangeSliderState,
+            sheetState = sheetState,
+            navController = navController)
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : CoroutineScope, navController: NavController) {
+private fun UserListScrollPortrait(
+    viewUserModel: UserListViewModel,
+    viewFilterModel: FilterViewModel,
+    rangeSliderState: RangeSliderState,
+    sheetState: SheetState,
+    scope : CoroutineScope,
+    navController: NavController)
+{
 
     Column {
         Spacer(
@@ -61,23 +97,23 @@ private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : Corouti
                 .fillMaxWidth()
                 .fillMaxHeight(0.88f)
         ) {
-            items(viewModel.uiState.filmList.size + 1) { index ->
+            items(viewUserModel.uiState.filmList.size + 1) { index ->
                 UserListElement(
-                        film = if (index != viewModel.uiState.filmList.size) viewModel.uiState.filmList[index]
+                        film = if (index != viewUserModel.uiState.filmList.size) viewUserModel.uiState.filmList[index]
                                 else Film(name = "#???#", autor = "#???#", mark = -1.0f, url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTXtOwPfVadN_I7YzkGc_CzjwOTNOvzjNxsg&usqp=CAU") ,
                         onCheckedValue = {
-                            if (index != viewModel.uiState.filmList.size) {
+                            if (index != viewUserModel.uiState.filmList.size) {
                                 scope.launch {
-                                    viewModel.watchFilm(viewModel.uiState.filmList[index])
+                                    viewUserModel.watchFilm(viewUserModel.uiState.filmList[index], viewFilterModel::filmsFilter)
                                 }
                             }
                         },
                         onImageClick = {
-                            if(!(index != viewModel.uiState.filmList.size) || viewModel.uiState.filmList[index].isCreated)
+                            if(!(index != viewUserModel.uiState.filmList.size) || viewUserModel.uiState.filmList[index].isCreated)
                                 navController.navigate("${PlaneCinemaScreen.Edit.name}/" +
-                                    "${if(index != viewModel.uiState.filmList.size) viewModel.uiState.filmList[index].id else -1 }") },
-                        isChecked = if(index != viewModel.uiState.filmList.size) viewModel.uiState.watchedFilms[index] else false,
-                        hasChecker = index != viewModel.uiState.filmList.size,
+                                    "${if(index != viewUserModel.uiState.filmList.size) viewUserModel.uiState.filmList[index].id else -1 }") },
+                        isChecked = if(index != viewUserModel.uiState.filmList.size) viewUserModel.uiState.watchedFilms[index] else false,
+                        hasChecker = index != viewUserModel.uiState.filmList.size,
                         genarelModifier =  Modifier
                             .fillMaxWidth(0.9f)
                             .height(170.dp)
@@ -93,14 +129,28 @@ private fun UserListScrollPortrait(viewModel: UserListViewModel, scope : Corouti
                             .padding(top = 18.dp)
                     )
             }
-
         }
+    }
+    if (viewFilterModel.uiState.showBottomSheet) {
+        FilterSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
+                    onCloseButton = {
+                        scope.launch {
+                        viewUserModel.getAllFilm(viewFilterModel::filmsFilter)
+                    } })
     }
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : CoroutineScope, navController: NavController) {
+private fun UserListScrollLandscape(
+    viewUserModel: UserListViewModel,
+    viewFilterModel: FilterViewModel,
+    rangeSliderState: RangeSliderState,
+    sheetState: SheetState,
+    scope : CoroutineScope,
+    navController: NavController)
+{
     Column {
         Spacer(
             modifier =
@@ -115,11 +165,11 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                 .fillMaxHeight(0.7f)
                 .padding(horizontal = 20.dp)
         ) {
-            val result = ceil(viewModel.uiState.filmList.size.toFloat() / 2.0f).toInt()
-            items(if (viewModel.uiState.filmList.size  % 2 == 0) result + 1 else result) { index ->
+            val result = ceil(viewUserModel.uiState.filmList.size.toFloat() / 2.0f).toInt()
+            items(if (viewUserModel.uiState.filmList.size  % 2 == 0) result + 1 else result) { index ->
                 Row {
                     UserListElement(
-                        film = if (index < result) viewModel.uiState.filmList[index]
+                        film = if (index < result) viewUserModel.uiState.filmList[index]
                         else Film(
                             name = "#???#",
                             autor = "#???#",
@@ -129,16 +179,16 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                         onCheckedValue = {
                             if (index < result) {
                                 scope.launch {
-                                    viewModel.watchFilm(viewModel.uiState.filmList[index])
+                                    viewUserModel.watchFilm(viewUserModel.uiState.filmList[index])
                                 }
                             }
                         },
                         onImageClick = {
-                            if( !(index < result) || viewModel.uiState.filmList[index].isCreated)
+                            if( !(index < result) || viewUserModel.uiState.filmList[index].isCreated)
                                 navController.navigate("${PlaneCinemaScreen.Edit.name}/" +
-                                    "${if(index < result) viewModel.uiState.filmList[index].id else -1 }")
+                                    "${if(index < result) viewUserModel.uiState.filmList[index].id else -1 }")
                             },
-                        isChecked = if (index < result) viewModel.uiState.watchedFilms[index] else false,
+                        isChecked = if (index < result) viewUserModel.uiState.watchedFilms[index] else false,
                         hasChecker = index < result,
                         genarelModifier = Modifier
                             .fillMaxWidth(0.5f)
@@ -155,9 +205,9 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                             .padding(top = 2.dp)
                     )
                     if (index < result) {
-                        val secondIndex = viewModel.uiState.filmList.size - 1 - index
+                        val secondIndex = viewUserModel.uiState.filmList.size - 1 - index
                         UserListElement(
-                            film = if (secondIndex != index) viewModel.uiState.filmList[secondIndex]
+                            film = if (secondIndex != index) viewUserModel.uiState.filmList[secondIndex]
                             else Film(
                                 name = "#???#",
                                 autor = "#???#",
@@ -167,16 +217,16 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
                             onCheckedValue = {
                                 if (secondIndex != index) {
                                     scope.launch {
-                                        viewModel.watchFilm(viewModel.uiState.filmList[secondIndex])
+                                        viewUserModel.watchFilm(viewUserModel.uiState.filmList[secondIndex])
                                     }
                                 }
                             },
                             onImageClick = {
-                                if(!(secondIndex != index) || viewModel.uiState.filmList[secondIndex].isCreated)
+                                if(!(secondIndex != index) || viewUserModel.uiState.filmList[secondIndex].isCreated)
                                     navController.navigate("${PlaneCinemaScreen.Edit.name}/" +
-                                        "${if(secondIndex != index) viewModel.uiState.filmList[secondIndex].id else -1 }")
+                                        "${if(secondIndex != index) viewUserModel.uiState.filmList[secondIndex].id else -1 }")
                             },
-                            isChecked = if (secondIndex != index) viewModel.uiState.watchedFilms[secondIndex] else false,
+                            isChecked = if (secondIndex != index) viewUserModel.uiState.watchedFilms[secondIndex] else false,
                             hasChecker = secondIndex != index,
                             genarelModifier = Modifier
                                 .fillMaxWidth()
@@ -197,6 +247,11 @@ private fun UserListScrollLandscape(viewModel: UserListViewModel, scope : Corout
             }
         }
     }
+    FilterSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
+        onCloseButton = {
+            scope.launch {
+                viewUserModel.getAllFilm(viewFilterModel::filmsFilter)
+            } })
 }
 
 @Composable

@@ -22,9 +22,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.RangeSliderState
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,10 +39,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.planetcinema.AppViewModelProvider
 import com.example.planetcinema.R
 import com.example.planetcinema.data.Film
+import com.example.planetcinema.view.FilterViewModel
 import com.example.planetcinema.view.WheelViewModel
 import com.lyh.spintest.SpinWheelComponent
 import com.lyh.spintest.SpinWheelItem
@@ -54,14 +55,29 @@ import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WheelCard(orientation : Int, viewModel: WheelViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun WheelCard(orientation : Int, viewWheelModel: WheelViewModel, viewFilterModel : FilterViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
+    val rangeSliderState = remember {
+        RangeSliderState(
+            activeRangeStart = viewFilterModel.uiState.filmRange.start,
+            activeRangeEnd = viewFilterModel.uiState.filmRange.endInclusive,
+            valueRange = viewFilterModel.uiState.filmRange,
+        )
+    }
 
     if(orientation == Configuration.ORIENTATION_PORTRAIT) {
-        WheelCardPortarait(viewModel, coroutineScope, sheetState)
+        WheelCardPortarait(viewWheelModel = viewWheelModel,
+                            viewFilterModel = viewFilterModel,
+                            rangeSliderState = rangeSliderState,
+                            scope = coroutineScope,
+                            sheetState = sheetState)
     } else {
-        WheelCardLandScape(viewModel, coroutineScope, sheetState)
+        WheelCardLandScape(viewWheelModel = viewWheelModel,
+                            viewFilterModel = viewFilterModel,
+                            rangeSliderState = rangeSliderState,
+                            scope = coroutineScope,
+                            sheetState = sheetState)
     }
 }
 
@@ -70,7 +86,9 @@ fun WheelCard(orientation : Int, viewModel: WheelViewModel = viewModel(factory =
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WheelCardPortarait(
-    viewModel: WheelViewModel,
+    viewWheelModel: WheelViewModel,
+    viewFilterModel: FilterViewModel,
+    rangeSliderState: RangeSliderState,
     scope: CoroutineScope,
     sheetState: SheetState
 ) {
@@ -83,15 +101,15 @@ private fun WheelCardPortarait(
         Modifier.fillMaxHeight(0.15f))
 
         Wheel(
-            films = viewModel.uiState.filmsInWheel,
+            films = viewWheelModel.uiState.filmsInWheel,
             modifier = Modifier
                 .fillMaxHeight(0.5f)
                 .fillMaxWidth(),
             activeButtons = {
                 scope.launch {
-                    viewModel.activeAllButtons(it)
+                    viewWheelModel.activeAllButtons(it)
                 } },
-            generateNumber = { viewModel.getRandomWheelNumber(it) },
+            generateNumber = { viewWheelModel.getRandomWheelNumber(it) },
             orientation = 0,
         )
 
@@ -105,35 +123,39 @@ private fun WheelCardPortarait(
                 .fillMaxWidth(0.8f)) {
 
             WheelButton(
-                OnButtonClicked = { viewModel.showBottomSheet(true) },
-                isEnable = viewModel.uiState.activeButtons,
+                OnButtonClicked = { scope.launch { viewWheelModel.reloadState(true, viewFilterModel::filmsFilter) }},
+                isEnable = viewWheelModel.uiState.activeButtons,
                 textButton = "Add movie",
                 buttonIcon = Icons.Filled.Add
             )
             WheelButton(
-                OnButtonClicked = { scope.launch {
-                    viewModel.clearFilms()
-                } },
-                isEnable = viewModel.uiState.films.isNotEmpty() && viewModel.uiState.activeButtons,
+                OnButtonClicked = { viewWheelModel.clearFilms() },
+                isEnable = viewWheelModel.uiState.films.isNotEmpty() && viewWheelModel.uiState.activeButtons,
                 textButton =  "Clear",
                 buttonIcon =  Icons.Filled.Delete
             )
         }
     }
-    if (viewModel.uiState.showBottomSheet) {
+    if (viewWheelModel.uiState.showBottomSheet) {
         WheelBottomSheet(sheetState = sheetState, scope = scope,
-            viewModel.uiState.films,
-            onDismissRequest = { viewModel.showBottomSheet(false) },
-            filmAdder = { scope.launch { viewModel.addFilm(it) } },
-            containFilm = { viewModel.containFilm(it) },
-            onCloseButton = { viewModel.showBottomSheet(false)})
+            viewWheelModel.uiState.films,
+            onDismissRequest = {scope.launch { viewWheelModel.reloadState(false, viewFilterModel::filmsFilter) }},
+            filmAdder = {viewWheelModel.addFilm(it)},
+            containFilm = { viewWheelModel.containFilm(it) },
+            onCloseButton = {scope.launch { viewWheelModel.reloadState(false, viewFilterModel::filmsFilter) }})
+    }
+    if (viewFilterModel.uiState.showBottomSheet) {
+        FilterSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
+            onCloseButton = {scope.launch { viewWheelModel.reloadState(false, viewFilterModel::filmsFilter)}})
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WheelCardLandScape(
-    viewModel: WheelViewModel,
+    viewWheelModel: WheelViewModel,
+    viewFilterModel: FilterViewModel,
+    rangeSliderState: RangeSliderState,
     scope: CoroutineScope,
     sheetState: SheetState
 ) {
@@ -155,41 +177,44 @@ private fun WheelCardLandScape(
                 .fillMaxWidth(0.4f)) {
 
             WheelButton(
-                OnButtonClicked = { viewModel.showBottomSheet(true) },
-                isEnable = viewModel.uiState.activeButtons,
+                OnButtonClicked = { scope.launch { viewWheelModel.reloadState(true, viewFilterModel::filmsFilter) }},
+                isEnable = viewWheelModel.uiState.activeButtons,
                 textButton = "Add movie",
                 buttonIcon =  Icons.Filled.Add,
                 modifier =  Modifier.padding(20.dp)
             )
             WheelButton(
-                OnButtonClicked =  { scope.launch {
-                    viewModel.clearFilms()
-                } },
-                isEnable = viewModel.uiState.films.isNotEmpty() && viewModel.uiState.activeButtons,
+                OnButtonClicked = { viewWheelModel.clearFilms() },
+                isEnable = viewWheelModel.uiState.films.isNotEmpty() && viewWheelModel.uiState.activeButtons,
                 textButton = "Clear",
                 buttonIcon = Icons.Filled.Delete
             )
         }
         Wheel(
-            films = viewModel.uiState.filmsInWheel,
+            films = viewWheelModel.uiState.filmsInWheel,
             modifier = Modifier
                 .fillMaxHeight(0.5f)
                 .fillMaxWidth(0.5f)
                 .padding(bottom = 100.dp),
             activeButtons = { scope.launch {
-                viewModel.activeAllButtons(it)
+                viewWheelModel.activeAllButtons(it)
             } },
             orientation = 1,
-            generateNumber = { viewModel.getRandomWheelNumber(it) },
+            generateNumber = { viewWheelModel.getRandomWheelNumber(it) },
             )
     }
-    if (viewModel.uiState.showBottomSheet) {
+    if (viewWheelModel.uiState.showBottomSheet) {
         WheelBottomSheet(sheetState = sheetState, scope = scope,
-            viewModel.uiState.films,
-            onDismissRequest = { viewModel.showBottomSheet(false) },
-            filmAdder = { scope.launch { viewModel.addFilm(it) } },
-            containFilm = { viewModel.containFilm(it) },
-            onCloseButton = { viewModel.showBottomSheet(false)})
+            viewWheelModel.uiState.films,
+            onDismissRequest = {scope.launch { viewWheelModel.reloadState(false, viewFilterModel::filmsFilter) }},
+            filmAdder = {viewWheelModel.addFilm(it)},
+            containFilm = { viewWheelModel.containFilm(it) },
+            onCloseButton = {scope.launch { viewWheelModel.reloadState(false, viewFilterModel::filmsFilter) }})
+    }
+
+    if (viewFilterModel.uiState.showBottomSheet) {
+        FilterSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
+            onCloseButton = {scope.launch { viewWheelModel.reloadState(false, viewFilterModel::filmsFilter)}})
     }
 }
 

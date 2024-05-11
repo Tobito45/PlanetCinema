@@ -34,7 +34,7 @@ class FilterViewModel() : ViewModel() {
             sortedList = sortedList.filter { it.autor.lowercase().contains(uiState.autorContainsWord.lowercase()) }
         }
 
-        sortedList = sortedList.filter { it.mark > uiState.filmRange.start && it.mark < uiState.filmRange.endInclusive }
+        sortedList = sortedList.filter { it.mark >= uiState.filmRange.start && it.mark <= uiState.filmRange.endInclusive }
         return sortedList
     }
 
