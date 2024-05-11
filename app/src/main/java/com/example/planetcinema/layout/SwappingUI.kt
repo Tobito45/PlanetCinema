@@ -61,10 +61,10 @@ fun SwappingCard(orientation : Int,
             sliderState = rangeSliderState,
             onSwapRight = {
                 coroutineScope.launch {
-                    viewSwapModel.checkFilm()
+                    viewSwapModel.checkFilm(viewFilterModel::filmsFilter)
                 }
             },
-            onSwapLeft = { viewSwapModel.generateNewFilm() }
+            onSwapLeft = { viewSwapModel.generateNewFilm(viewFilterModel::filmsFilter) }
         )
     } else {
         SwappingCardLandScape(viewSwapModel = viewSwapModel, viewFilterModel = viewFilterModel,

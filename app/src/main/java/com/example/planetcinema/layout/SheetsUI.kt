@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -19,7 +21,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -28,6 +29,7 @@ import androidx.compose.material3.RangeSliderState
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.planetcinema.data.Film
 import com.example.planetcinema.view.FilterViewModel
@@ -91,7 +94,7 @@ fun FilterSheet (viewModel: FilterViewModel,
         scope = scope,
         onDismissRequest = {viewModel.resetUiState(active = false)} ,
         onCloseButton = {viewModel.resetUiState(active = false)} ) {
-        BasicSheetCard {
+        /*BasicSheetCard {
             BasicSheetText(text = "Sort films by alphabetic of names")
             Checkbox(checked = viewModel.uiState.isAbcFilmSorted, onCheckedChange = {viewModel.resetUiState(
                 isAbcFilmSorted = it)}, modifier = Modifier.padding(10.dp))
@@ -100,9 +103,29 @@ fun FilterSheet (viewModel: FilterViewModel,
             BasicSheetText(text = "Sort films by alphabetic of authors")
             Checkbox(checked = viewModel.uiState.isAbcAutorSorted, onCheckedChange = {viewModel.resetUiState(
                 isAbcAutorSorted = it)}, modifier = Modifier.padding(10.dp))
+        }*/
+        BasicSheetCard {
+            BasicSheetText(text = "Sort films contains ", modifier = Modifier.fillMaxSize(0.5f))
+            TextField(
+                value = viewModel.uiState.filmContainsWord,
+                onValueChange =  { viewModel.resetUiState(filmContainsWord = it)},
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
+            )
         }
         BasicSheetCard {
-            BasicSheetText(text = "Sort films by marks")
+            BasicSheetText(text = "Sort authors contains ", modifier = Modifier.fillMaxSize(0.5f))
+            TextField(
+                value = viewModel.uiState.autorContainsWord,
+                onValueChange =  { viewModel.resetUiState(autorContainsWord = it)},
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
+            )
+        }
+        BasicSheetCard {
+            BasicSheetText(text = "Sort films by marks", modifier = Modifier.fillMaxSize(0.5f))
             Column {
                 val rangeStart = "%.2f".format(rangeSliderState.activeRangeStart).replace(",",".")
                 val rangeEnd = "%.2f".format(rangeSliderState.activeRangeEnd).replace(",",".")
@@ -120,15 +143,13 @@ fun FilterSheet (viewModel: FilterViewModel,
                     },
                     modifier = Modifier
                         .semantics { contentDescription = "Localized Description" }
-                        .padding(5.dp)
+                        .padding(top = 5.dp, end = 15.dp)
                 )
 
-                Text(text = "$rangeStart .. $rangeEnd", color = Color.White, modifier = Modifier.padding(10.dp))
+                Text(text = "$rangeStart .. $rangeEnd", color = Color.White, modifier = Modifier.padding(5.dp))
             }
 
         }
-
-
     }
 }
 
@@ -198,6 +219,6 @@ fun BasicSheetCard(
 }
 
 @Composable
-fun BasicSheetText(text : String) {
-    Text(text = text, color = Color.White, modifier = Modifier.padding(10.dp))
+fun BasicSheetText(text : String, modifier: Modifier = Modifier) {
+    Text(text = text, color = Color.White, modifier = modifier.padding(10.dp))
 }

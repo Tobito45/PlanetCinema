@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class SwapViewModel(
     private val filmLocalRepository: FilmsRepository,
-    private val filmFireRepository: FilmFirebaseRepository
+    private val filmFireRepository: FilmFirebaseRepository,
 ) : ViewModel() {
     var uiState by mutableStateOf(SpinUiState(null))
         private set
@@ -21,29 +21,21 @@ class SwapViewModel(
         generateNewFilm()
     }
 
-    fun generateNewFilm() {
+    fun generateNewFilm(sorting : (List<Film>) -> List<Film> = {it}) {
         viewModelScope.launch {
             val filmsOfUser = filmLocalRepository.getAllFilmsStream().first()
-            val randomFilms = filmFireRepository.getAllFilmWithout(filmsOfUser)
+            val randomFilms = sorting(filmFireRepository.getAllFilmWithout(filmsOfUser))
             uiState = SpinUiState(actualFilm = if(randomFilms.isEmpty()) null else randomFilms.random())
         }
     }
 
-    suspend fun checkFilm() {
+    suspend fun checkFilm(sorting : (List<Film>) -> List<Film> = {it}) {
         val actualFilm = uiState.actualFilm
         if (actualFilm != null) {
             filmLocalRepository.insertFilm(actualFilm.take())
         }
-        generateNewFilm()
+        generateNewFilm(sorting)
     }
-
-    fun showBottomSheet() {
-        var copy = uiState
-        uiState = SpinUiState(
-            actualFilm = copy.actualFilm,
-        )
-    }
-
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }
