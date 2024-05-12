@@ -132,7 +132,7 @@ private fun UserListScrollPortrait(
         }
     }
     if (viewFilterModel.uiState.showBottomSheet) {
-        FilterSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
+        FilterUserListSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
                     onCloseButton = {
                         scope.launch {
                         viewUserModel.getAllFilm(viewFilterModel::filmsFilter)

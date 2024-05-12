@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -88,7 +89,8 @@ fun FilterSheet (viewModel: FilterViewModel,
                  sheetState: SheetState,
                  scope: CoroutineScope,
                  rangeSliderState : RangeSliderState,
-                 onCloseButton: () -> Unit = {}
+                 onCloseButton: () -> Unit = {},
+                 content: @Composable ColumnScope.() -> Unit = {}
 ) {
     BasicSheet(
         sheetState = sheetState,
@@ -101,6 +103,7 @@ fun FilterSheet (viewModel: FilterViewModel,
             viewModel.resetUiState(active = false)
             onCloseButton()
         } ) {
+        content()
         BasicSheetCard {
             BasicSheetText(text = "Sort films contains ", modifier = Modifier.fillMaxSize(0.5f))
             TextField(
@@ -147,7 +150,30 @@ fun FilterSheet (viewModel: FilterViewModel,
 
                 Text(text = "$rangeStart .. $rangeEnd", color = Color.White, modifier = Modifier.padding(5.dp))
             }
+        }
+    }
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FilterUserListSheet(viewModel: FilterViewModel,
+                        sheetState: SheetState,
+                        scope: CoroutineScope,
+                        rangeSliderState : RangeSliderState,
+                        onCloseButton: () -> Unit = {}
+)  {
+    FilterSheet(viewModel = viewModel,
+        sheetState = sheetState,
+        scope = scope,
+        rangeSliderState = rangeSliderState,
+        onCloseButton = onCloseButton) {
+        BasicSheetCard {
+            BasicSheetText(text = "Sort films contains ", modifier = Modifier.fillMaxSize(0.5f))
+            Checkbox(
+                checked = viewModel.uiState.isWatchedFilms,
+                onCheckedChange = {viewModel.resetUiState(isWatchedFilms = it)},
+                modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
+            )
         }
     }
 }

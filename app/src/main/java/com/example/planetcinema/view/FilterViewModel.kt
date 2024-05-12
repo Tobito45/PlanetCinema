@@ -26,6 +26,10 @@ class FilterViewModel() : ViewModel() {
             sortedList = sortedList.sortedWith(compareBy<Film> { it.name }.thenBy { it.autor })
         }
 
+        if(uiState.isWatchedFilms && uiState.isWatchedFilms) {
+            sortedList = sortedList.filter { it.isWatched }
+        }
+
         if(uiState.filmContainsWord.isNotEmpty() && uiState.filmContainsWord.isNotBlank()) {
             sortedList = sortedList.filter { it.name.lowercase().contains(uiState.filmContainsWord.lowercase()) }
         }
@@ -42,6 +46,7 @@ class FilterViewModel() : ViewModel() {
         active: Boolean? = null,
         isAbcAutorSorted: Boolean? = null,
         isAbcFilmSorted: Boolean? = null,
+        isWatchedFilms: Boolean? = null,
         autorContainsWord: String? = null,
         filmContainsWord: String? = null,
         filmRange: ClosedFloatingPointRange<Float>? = null) {
@@ -50,6 +55,7 @@ class FilterViewModel() : ViewModel() {
             showBottomSheet = active ?: copy.showBottomSheet,
             isAbcFilmSorted = isAbcFilmSorted ?: copy.isAbcFilmSorted,
             isAbcAutorSorted = isAbcAutorSorted ?: copy.isAbcAutorSorted,
+            isWatchedFilms = isWatchedFilms ?: copy.isWatchedFilms,
             filmContainsWord = filmContainsWord ?: copy.filmContainsWord,
             autorContainsWord = autorContainsWord ?: copy.autorContainsWord,
             filmRange = filmRange ?: copy.filmRange
@@ -65,6 +71,7 @@ data class FilterUiState(
     val showBottomSheet : Boolean = false,
     val isAbcFilmSorted : Boolean = false,
     val isAbcAutorSorted : Boolean = false,
+    val isWatchedFilms: Boolean = false,
     val filmContainsWord : String = "",
     val autorContainsWord : String = "",
     val filmRange : ClosedFloatingPointRange<Float> = 0.0f..10.0f,
