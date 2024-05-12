@@ -162,18 +162,22 @@ fun FilterUserListSheet(viewModel: FilterViewModel,
                         rangeSliderState : RangeSliderState,
                         onCloseButton: () -> Unit = {}
 )  {
-    FilterSheet(viewModel = viewModel,
-        sheetState = sheetState,
-        scope = scope,
-        rangeSliderState = rangeSliderState,
-        onCloseButton = onCloseButton) {
-        BasicSheetCard {
-            BasicSheetText(text = "Sort films contains ", modifier = Modifier.fillMaxSize(0.5f))
-            Checkbox(
-                checked = viewModel.uiState.isWatchedFilms,
-                onCheckedChange = {viewModel.resetUiState(isWatchedFilms = it)},
-                modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
-            )
+    if(viewModel.uiState.showBottomSheet) {
+        FilterSheet(
+            viewModel = viewModel,
+            sheetState = sheetState,
+            scope = scope,
+            rangeSliderState = rangeSliderState,
+            onCloseButton = onCloseButton
+        ) {
+            BasicSheetCard {
+                BasicSheetText(text = "Sort films contains ", modifier = Modifier.fillMaxSize(0.5f))
+                Checkbox(
+                    checked = viewModel.uiState.isWatchedFilms,
+                    onCheckedChange = { viewModel.resetUiState(isWatchedFilms = it) },
+                    modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
+                )
+            }
         }
     }
 }

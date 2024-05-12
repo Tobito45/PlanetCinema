@@ -36,19 +36,20 @@ import coil.request.ImageRequest
 import com.example.planetcinema.R
 
 @Composable
-fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String,
+fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String, userMark : String = "", isWatched : Boolean = false,
                  sizeMainText : Int, sizeSmallText : Int,
                  smallTextHorizontalArrangement : Arrangement.Horizontal = Arrangement.Start,
                  smallTextModifier: Modifier = Modifier,
                  smallRowModifier : Modifier) {
         Column {
-            Text(
-                text = if (filmName != "#???#") filmName else "???",
-                color = Color.White,
-                fontWeight = FontWeight.Normal,
-                fontSize = sizeMainText.sp
-            )
-
+            Row {
+                Text(
+                    text = if (filmName != "#???#") filmName else "???",
+                    color = Color.White,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = sizeMainText.sp
+                )
+            }
             val annotatedString = if (filmAutor != "#???#") {
                 buildAnnotatedString {
                     append("By ")
@@ -78,9 +79,11 @@ fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String,
                 Icons.Default.Star,
                 contentDescription = null,
                 tint = Color(0xFFFFC700),
-                modifier = Modifier.padding(end = 8.dp)
-                    .size(30.dp)
+                modifier = Modifier
+                    .padding(end = 2.dp)
+                    .size(28.dp)
             )
+
             Text(
                 text = if(filmMark != "-1.0") filmMark else "?",
                 color = Color.White,
@@ -88,6 +91,15 @@ fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String,
                 fontWeight = FontWeight.Light,
                 modifier = Modifier.padding(top = 4.dp)
             )
+            if(userMark.isNotEmpty() && isWatched) {
+                Text(
+                    text = "($userMark)",
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Light,
+                    modifier = Modifier.padding(top = 5.dp)
+                )
+            }
             Text(
                 text = "/10",
                 color = Color.Gray,

@@ -14,14 +14,16 @@ data class Film (
     var autor : String,
     var mark : Float,
     var url : String,
+    var userMark: Float = -1.0f,
     val isCreated : Boolean = false
 ) {
     fun take() : Film {
         takeIt = true
         return this
     }
-    fun watch(set : Boolean) : Film {
+    fun watch(set : Boolean, mark: Float) : Film {
         isWatched = set
+        userMark = mark
         return this
     }
 

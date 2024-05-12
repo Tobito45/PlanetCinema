@@ -12,13 +12,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RangeSliderState
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -26,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.planetcinema.PlaneCinemaScreen
@@ -103,9 +114,15 @@ private fun UserListScrollPortrait(
                                 else Film(name = "#???#", autor = "#???#", mark = -1.0f, url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTXtOwPfVadN_I7YzkGc_CzjwOTNOvzjNxsg&usqp=CAU") ,
                         onCheckedValue = {
                             if (index != viewUserModel.uiState.filmList.size) {
-                                scope.launch {
-                                    viewUserModel.watchFilm(viewUserModel.uiState.filmList[index], viewFilterModel::filmsFilter)
-                                }
+                                if(viewUserModel.uiState.filmList[index].isWatched) {
+                                    scope.launch {
+                                        viewUserModel.watchFilm(false, viewUserModel.uiState.filmList[index], viewFilterModel::filmsFilter)
+                                    }
+                                } else
+                                    viewUserModel.actualizationDialog(true,
+                                        mark = if(viewUserModel.uiState.filmList[index].userMark > 0)
+                                            viewUserModel.uiState.filmList[index].userMark.toString().replace(",",".") else "",
+                                        seletedFilm = viewUserModel.uiState.filmList[index])
                             }
                         },
                         onImageClick = {
@@ -114,7 +131,7 @@ private fun UserListScrollPortrait(
                                     "${if(index != viewUserModel.uiState.filmList.size) viewUserModel.uiState.filmList[index].id else -1 }") },
                         isChecked = if(index != viewUserModel.uiState.filmList.size) viewUserModel.uiState.watchedFilms[index] else false,
                         hasChecker = index != viewUserModel.uiState.filmList.size,
-                        genarelModifier =  Modifier
+                        genarelModifier = Modifier
                             .fillMaxWidth(0.9f)
                             .height(170.dp)
                             .padding(top = 20.dp)
@@ -138,6 +155,11 @@ private fun UserListScrollPortrait(
                         viewUserModel.getAllFilm(viewFilterModel::filmsFilter)
                     } })
     }
+    UserListDialog(viewUserModel = viewUserModel,
+        onCloseDialog =  { viewUserModel.actualizationDialog(false) },
+        onConfirmDialog = { scope.launch { viewUserModel.watchFilm(watch = true, sorting =  viewFilterModel::filmsFilter) }}
+
+    )
 }
 
 
@@ -178,9 +200,17 @@ private fun UserListScrollLandscape(
                         ),
                         onCheckedValue = {
                             if (index < result) {
-                                scope.launch {
-                                    viewUserModel.watchFilm(viewUserModel.uiState.filmList[index])
-                                }
+                                if(viewUserModel.uiState.filmList[index].isWatched) {
+                                    scope.launch {
+                                        viewUserModel.watchFilm(watch = false,
+                                            seletedFilm = viewUserModel.uiState.filmList[index],
+                                            sorting =  viewFilterModel::filmsFilter)
+                                    }
+                                } else
+                                    viewUserModel.actualizationDialog(true,
+                                        mark = if(viewUserModel.uiState.filmList[index].userMark > 0)
+                                            viewUserModel.uiState.filmList[index].userMark.toString().replace(",",".") else "",
+                                        seletedFilm = viewUserModel.uiState.filmList[index])
                             }
                         },
                         onImageClick = {
@@ -216,9 +246,20 @@ private fun UserListScrollLandscape(
                             ),
                             onCheckedValue = {
                                 if (secondIndex != index) {
-                                    scope.launch {
-                                        viewUserModel.watchFilm(viewUserModel.uiState.filmList[secondIndex])
-                                    }
+                                    if(viewUserModel.uiState.filmList[index].isWatched) {
+                                        scope.launch {
+                                            viewUserModel.watchFilm(watch = false,
+                                                seletedFilm = viewUserModel.uiState.filmList[index],
+                                                sorting =  viewFilterModel::filmsFilter)
+                                        }
+                                    } else
+                                        viewUserModel.actualizationDialog(true,
+                                            mark = if(viewUserModel.uiState.filmList[secondIndex].userMark > 0)
+                                                viewUserModel.uiState.filmList[secondIndex].userMark.toString().replace(",",".") else "",
+                                            seletedFilm = viewUserModel.uiState.filmList[secondIndex])
+                                    //scope.launch {
+                                    //    viewUserModel.watchFilm(viewUserModel.uiState.filmList[secondIndex])
+                                    //}
                                 }
                             },
                             onImageClick = {
@@ -247,11 +288,16 @@ private fun UserListScrollLandscape(
             }
         }
     }
-    FilterSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
+
+    FilterUserListSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
         onCloseButton = {
             scope.launch {
                 viewUserModel.getAllFilm(viewFilterModel::filmsFilter)
             } })
+    UserListDialog(viewUserModel = viewUserModel,
+            onCloseDialog = { viewUserModel.actualizationDialog(false) },
+            onConfirmDialog = { scope.launch { viewUserModel.watchFilm(watch = true, sorting = viewFilterModel::filmsFilter) }}
+        )
 }
 
 @Composable
@@ -279,10 +325,13 @@ fun UserListElement(film : Film,
                 .fillMaxHeight()
                 .fillMaxWidth(0.8f)
         ) {
+            var userMark = if(film.userMark < 0) "" else film.userMark
             TextInfoFilm(
                 filmName = film.name,
                 filmAutor = film.autor,
                 filmMark = film.mark.toString(),
+                userMark = userMark.toString(),
+                isWatched = film.isWatched,
                 sizeMainText = 18,
                 sizeSmallText = 15,
                 smallTextModifier = smallTextModifier,
@@ -301,6 +350,61 @@ fun UserListElement(film : Film,
                     .align(Alignment.CenterVertically)
                     .padding(end = 20.dp)
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun UserListDialog(
+    viewUserModel: UserListViewModel,
+    onCloseDialog : () -> Unit,
+    onConfirmDialog : () -> Unit
+) {
+    if (viewUserModel.uiState.dialogShow) {
+        BasicAlertDialog(
+            onDismissRequest = onCloseDialog
+        ) {
+            Surface(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .wrapContentHeight(),
+                shape = MaterialTheme.shapes.large,
+                tonalElevation = AlertDialogDefaults.TonalElevation
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "And what do you think of this film? Set the mark of this film.",
+                    )
+                    TextField(value = viewUserModel.uiState.filmMarkValue,
+                        onValueChange = { viewUserModel.actualizationDialog(active = true, mark = it)},
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        maxLines = 1,
+                        singleLine = true,
+                        isError = viewUserModel.uiState.isDialogError,
+                        label = { Text(text = "Mark") },
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        TextButton(
+                            onClick = {
+                                onConfirmDialog()
+                                onCloseDialog()
+                            },
+                        ) {
+                            Text("Confirm")
+                        }
+                        TextButton(
+                            onClick = onCloseDialog,
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
+                }
+            }
         }
     }
 }

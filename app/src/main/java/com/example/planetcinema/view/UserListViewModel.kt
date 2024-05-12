@@ -30,10 +30,23 @@ class UserListViewModel(private val filmRepository: FilmsRepository) : ViewModel
     }
 
 
-    suspend fun watchFilm(film : Film, sorting : (List<Film>) -> List<Film> = {it}) {
-        filmRepository.updateFilm(film.watch(!film.isWatched))
+    suspend fun watchFilm(watch : Boolean, seletedFilm: Film? = null, sorting : (List<Film>) -> List<Film> = {it}) {
+        if(watch) {
+            if (uiState.filmMarkValue.isEmpty() || uiState.filmMarkValue.isBlank()) {
+                actualizationDialog(active = true, isError = true)
+                return
+            }
+        }
+        val select = uiState.seletedFilm ?: seletedFilm
+        if(select != null) {
+            filmRepository.updateFilm(select.watch(watch,
+               if(uiState.filmMarkValue.isNotEmpty()) uiState.filmMarkValue.replace(",",".").toFloat()
+                        else select.userMark ?: -1.0f
+            ))
+        }
         getAllFilm(sorting)
     }
+
 
     suspend fun getAllFilm(sorting : (List<Film>) -> List<Film> = {it}) {
         filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
@@ -44,9 +57,24 @@ class UserListViewModel(private val filmRepository: FilmsRepository) : ViewModel
             )
         }
     }
+    fun actualizationDialog(active : Boolean, seletedFilm: Film? = null, mark : String? = null, isError : Boolean = false) {
+        val copy = uiState
+        uiState = UserListUiState(
+            filmList = copy.filmList,
+            watchedFilms = copy.watchedFilms,
+            dialogShow = active,
+            filmMarkValue = mark ?: if(uiState.filmMarkValue.replace(",",".").toFloat() > 10.0) 10.0f.toString() else uiState.filmMarkValue,
+            isDialogError = isError,
+            seletedFilm = seletedFilm ?: copy.seletedFilm
+        )
+    }
 }
 
 data class UserListUiState(
     val filmList: List<Film> = listOf(),
     val watchedFilms : List<Boolean> = listOf(),
+    val dialogShow : Boolean = false,
+    val filmMarkValue : String = "",
+    val isDialogError : Boolean = false,
+    val seletedFilm : Film? = null,
 )
