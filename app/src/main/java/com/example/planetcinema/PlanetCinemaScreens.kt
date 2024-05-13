@@ -75,7 +75,7 @@ fun SwapScreen(
 
     SquareBackgroundHeader(orientation = orientation, menu = 0);
     Header("Discover", onIconClick = {viewFilterModel.resetUiState(active = true)})
-    SwappingCard(orientation = orientation, viewSwapModel = viewSwapModel)
+    SwappingCard(orientation = orientation, viewSwapModel = viewSwapModel, viewFilterModel = viewFilterModel)
     NavBar(selectedItem, orientation, navController)
 }
 

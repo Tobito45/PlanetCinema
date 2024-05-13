@@ -3,9 +3,7 @@ package com.example.planetcinema.data.firebase
 import android.util.Log
 import com.example.planetcinema.data.Film
 
-class OfflineFilmFirebaseRepository : FilmFirebaseRepository {
-    val dataBase = FirebaseDataBase()
-
+class OfflineFilmFirebaseRepository(private val dataBase: FirebaseDataBase) : FilmFirebaseRepository {
     init {
         dataBase.initializeDbRef()
     }

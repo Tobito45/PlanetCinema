@@ -2,6 +2,7 @@ package com.example.planetcinema.data
 
 import android.content.Context
 import com.example.planetcinema.data.firebase.FilmFirebaseRepository
+import com.example.planetcinema.data.firebase.FirebaseDataBase
 import com.example.planetcinema.data.firebase.OfflineFilmFirebaseRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,6 @@ class AppDataContainer(private val context: Context) : AppContainer {
     }
 
     override val filmsFireRepository: FilmFirebaseRepository by lazy {
-        OfflineFilmFirebaseRepository()
+        OfflineFilmFirebaseRepository(FirebaseDataBase())
     }
 }

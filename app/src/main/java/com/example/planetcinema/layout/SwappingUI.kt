@@ -27,8 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.planetcinema.AppViewModelProvider
 import com.example.planetcinema.R
 import com.example.planetcinema.swipe.CreateSwipeAction
 import com.example.planetcinema.view.FilterViewModel
@@ -41,8 +39,8 @@ import me.saket.swipe.SwipeableActionsBox
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwappingCard(orientation : Int,
-                 viewSwapModel: SwapViewModel = viewModel(factory = AppViewModelProvider.Factory),
-                 viewFilterModel: FilterViewModel = viewModel(factory = AppViewModelProvider.Factory)
+                 viewSwapModel: SwapViewModel,
+                 viewFilterModel: FilterViewModel
 ) {
     val sheetState = rememberModalBottomSheetState()
     val coroutineScope = rememberCoroutineScope()
