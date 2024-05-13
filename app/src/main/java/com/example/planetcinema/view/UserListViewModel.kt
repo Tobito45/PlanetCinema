@@ -63,7 +63,7 @@ class UserListViewModel(private val filmRepository: FilmsRepository) : ViewModel
             filmList = copy.filmList,
             watchedFilms = copy.watchedFilms,
             dialogShow = active,
-            filmMarkValue = mark ?: if(uiState.filmMarkValue.replace(",",".").toFloat() > 10.0) 10.0f.toString() else uiState.filmMarkValue,
+            filmMarkValue = mark ?: if(uiState.filmMarkValue.isNotEmpty() && uiState.filmMarkValue.replace(",",".").toFloat() > 10.0) 10.0f.toString() else uiState.filmMarkValue,
             isDialogError = isError,
             seletedFilm = seletedFilm ?: copy.seletedFilm
         )

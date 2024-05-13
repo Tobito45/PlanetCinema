@@ -6,11 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.planetcinema.ModelPreferencesManager
 import com.example.planetcinema.data.Film
 import com.example.planetcinema.data.FilmsRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+
 
 class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel()  {
     var uiState by mutableStateOf(WheelUiState())
@@ -19,10 +21,12 @@ class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel() 
 
 
     init {
+        val bag = ModelPreferencesManager.get<BagFilms>("KEY_BAG")
         viewModelScope.launch {
             filmRepository.getCheckedFilmsStream().collect { updatedFilmList ->
                 uiState = WheelUiState(
                     films = updatedFilmList,
+                    filmsInWheel = bag?.films ?: listOf(),
                 )
             }
         }
@@ -75,6 +79,14 @@ class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel() 
             activeButtons = copy.activeButtons,
             showBottomSheet = activeList,
         )
+
+        if(!activeList)
+            saveData()
+    }
+
+    fun saveData() {
+        val bag = BagFilms(uiState.filmsInWheel)
+        ModelPreferencesManager.put(bag, "KEY_BAG")
     }
 }
 
@@ -84,3 +96,5 @@ data class WheelUiState(
     var activeButtons: Boolean = true,
     var showBottomSheet : Boolean = false,
 )
+
+data class BagFilms(var films: List<Film>)

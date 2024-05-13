@@ -9,6 +9,7 @@ class PlanetCinemaApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        ModelPreferencesManager.with(this)
         container = AppDataContainer(this)
     }
 }
