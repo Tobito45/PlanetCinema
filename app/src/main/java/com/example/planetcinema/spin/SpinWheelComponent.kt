@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.planetcinema.R
 import com.example.planetcinema.spin.toColor
 import kotlinx.collections.immutable.toPersistentList
 
@@ -113,7 +112,7 @@ private fun SpinWheelComponentPreview() {
             }.toPersistentList()
         }
 
-        val state = rememberSpinWheelState(
+        /*val state = rememberSpinWheelState(
             items = items,
             backgroundImage = R.drawable.spin_wheel_background,
             centerImage = R.drawable.spin_wheel_center,
@@ -121,5 +120,5 @@ private fun SpinWheelComponentPreview() {
             onSpinningFinished = {},
         )
         SpinWheelComponent(state)
-    }
+    */}
 }

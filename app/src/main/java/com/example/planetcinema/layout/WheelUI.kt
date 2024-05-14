@@ -111,6 +111,7 @@ private fun WheelCardPortarait(
                 } },
             generateNumber = { viewWheelModel.getRandomWheelNumber(it) },
             orientation = 0,
+            viewWheelModel = viewWheelModel
         )
 
         Spacer(modifier =
@@ -201,6 +202,7 @@ private fun WheelCardLandScape(
             } },
             orientation = 1,
             generateNumber = { viewWheelModel.getRandomWheelNumber(it) },
+            viewWheelModel = viewWheelModel
             )
     }
     if (viewWheelModel.uiState.showBottomSheet) {
@@ -264,7 +266,8 @@ fun Wheel(modifier: Modifier,
           films : List<Film>,
           generateNumber : (Int) -> Int,
           activeButtons : (Boolean) -> Unit,
-          orientation: Int
+          orientation: Int,
+          viewWheelModel: WheelViewModel
 ) {
     var listColors = listOf(
             listOf(Color(0xFF02315E), Color(0xFF02315E)),
@@ -280,7 +283,7 @@ fun Wheel(modifier: Modifier,
                                     else  (index) % 4  + 1];
             SpinWheelItem(colors = colors.toPersistentList()) {
                 AutoResizedText(
-                    text = if(films.isEmpty()) "Empty List " else films[index].name + " " + films.size,
+                    text = if(films.isEmpty()) "Empty List " else films[index].name,
                     style = TextStyle(color = Color.White, fontSize =
                         if(orientation == 0) 18.sp else 10.sp),
                     modifier = Modifier
@@ -304,9 +307,9 @@ fun Wheel(modifier: Modifier,
         stopNbTurn = 3f,
         rotationPerSecond = 0.8f,
         scope = rememberCoroutineScope(),
+        rotation = viewWheelModel.uiAnimationState.rotation
     )
     val coroutineScope = rememberCoroutineScope()
-    var res : Int = -1
     Box(modifier = modifier) {
         val mLocalContext = LocalContext.current
 

@@ -1,6 +1,8 @@
 package com.example.planetcinema.view
 
 import android.util.Log
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,7 +20,8 @@ class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel() 
     var uiState by mutableStateOf(WheelUiState())
         private set
 
-
+    var uiAnimationState by mutableStateOf(WheelAnimationUiState())
+        private set
 
     init {
         val bag = ModelPreferencesManager.get<BagFilms>("KEY_BAG")
@@ -38,7 +41,7 @@ class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel() 
         uiState = WheelUiState(
             films = films,
             filmsInWheel = filmsInWheel,
-            activeButtons = active
+            activeButtons = active,
         )
     }
 
@@ -53,7 +56,7 @@ class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel() 
             films = films,
             filmsInWheel = if (containFilm(newFilm)) filmsInWheel - newFilm else filmsInWheel + newFilm,
             activeButtons = true,
-            showBottomSheet = true
+            showBottomSheet = true,
         )
     }
 
@@ -64,7 +67,7 @@ class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel() 
          uiState = WheelUiState(
              films = films,
              filmsInWheel = listOf(),
-             activeButtons = true
+             activeButtons = true,
          )
      }
 
@@ -97,4 +100,7 @@ data class WheelUiState(
     var showBottomSheet : Boolean = false,
 )
 
+data class WheelAnimationUiState(
+    val rotation : Animatable<Float, AnimationVector1D> = Animatable(0f),
+)
 data class BagFilms(var films: List<Film>)

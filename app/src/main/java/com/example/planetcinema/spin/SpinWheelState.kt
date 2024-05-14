@@ -3,22 +3,18 @@ package com.lyh.spintest
 import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.EaseOutQuad
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import com.example.planetcinema.spin.getDegreeFromSection
 import com.example.planetcinema.spin.getDegreeFromSectionWithRandom
-import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 @Stable
 data class SpinWheelState(
@@ -32,10 +28,12 @@ data class SpinWheelState(
     private val stopNbTurn: Float,
     private val rotationPerSecond: Float,
     private val scope: CoroutineScope,
+    internal val rotation : Animatable<Float, AnimationVector1D>
 ) {
-    internal val rotation = Animatable(0f)
+  //  internal val rotation = Animatable(0f)
 
     init {
+        Log.i("Koleso", "regenerate")
         initSpinWheelSection?.let {
             goto(it)
         } ?: launchInfinite()
@@ -92,7 +90,7 @@ data class SpinWheelState(
         }
     }
 }
-
+/*
 @Composable
 fun rememberSpinWheelState(
     items: PersistentList<SpinWheelItem>,
@@ -120,4 +118,4 @@ fun rememberSpinWheelState(
             onSpinningFinished = onSpinningFinished,
         )
     }
-}
+}*/
