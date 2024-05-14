@@ -4,10 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Database(entities = [Film::class], version = 2, exportSchema = false)
 abstract class FilmDatabase : RoomDatabase() {
@@ -21,14 +18,13 @@ abstract class FilmDatabase : RoomDatabase() {
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(context, FilmDatabase::class.java, "item_database")
                     .fallbackToDestructiveMigration()
-                    //.addCallback(FilmDatabaseCallback(scope))
                     .build()
                     .also { Instance = it }
             }
         }
     }
 
-    private class FilmDatabaseCallback(private val scope: CoroutineScope) : RoomDatabase.Callback() {
+  /*  private class FilmDatabaseCallback(private val scope: CoroutineScope) : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
             scope.launch(Dispatchers.IO) {
@@ -55,5 +51,5 @@ abstract class FilmDatabase : RoomDatabase() {
                     url = "https://m.media-amazon.com/images/I/71USAqWyT9L._AC_UF894,1000_QL80_.jpg"))
             }
         }
-    }
+    }*/
 }

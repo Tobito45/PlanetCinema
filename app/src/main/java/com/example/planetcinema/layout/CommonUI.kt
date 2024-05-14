@@ -108,10 +108,7 @@ fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String, userMa
                 modifier = Modifier
                     .align(Alignment.Top)
                     .padding(top = 8.dp)
-            // .align(Alignment.Bottom)
             )
-       // }
-
     }
 }
 

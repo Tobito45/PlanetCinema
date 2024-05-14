@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -36,11 +37,6 @@ enum class PlaneCinemaScreen() {
 fun PlanetCinemaApp(
     navController: NavHostController = rememberNavController()
 ) {
-    //val backStackEntry by navController.currentBackStackEntryAsState()
-    //val currentScreen = PlaneCinemaScreen.valueOf(
-    //    backStackEntry?.destination?.route ?: PlaneCinemaScreen.Start.name
-    //)
-
     NavHost(
         navController = navController,
         startDestination = PlaneCinemaScreen.Swapping.name,
@@ -55,7 +51,7 @@ fun PlanetCinemaApp(
             UserListScreen(PlaneCinemaScreen.UserList.ordinal, navController)
         }
         composable(route = "${PlaneCinemaScreen.Edit.name}/{filmId}",
-            arguments = listOf(navArgument("filmId") { type = NavType.StringType })) {
+            arguments = listOf(navArgument(name = "filmId") { type = NavType.StringType })) {
                 backStackEntry ->
             val filmId = backStackEntry.arguments?.getString("filmId")?.toIntOrNull() ?: 0
             EditScreen(navController, filmId)
@@ -74,7 +70,7 @@ fun SwapScreen(
     val orientation = LocalConfiguration.current.orientation
 
     SquareBackgroundHeader(orientation = orientation, menu = 0);
-    Header("Discover", onIconClick = {viewFilterModel.resetUiState(active = true)})
+    Header(panelName = stringResource(R.string.discover), onIconClick = {viewFilterModel.resetUiState(active = true)})
     SwappingCard(orientation = orientation, viewSwapModel = viewSwapModel, viewFilterModel = viewFilterModel)
     NavBar(selectedItem, orientation, navController)
 }
