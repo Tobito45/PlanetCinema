@@ -85,7 +85,7 @@ fun WheelScreen(
     val orientation = LocalConfiguration.current.orientation
 
     SquareBackgroundHeader(orientation, 1);
-    Header("Select a movie", onIconClick = {viewFilterModel.resetUiState(active = true)})
+    Header(stringResource(R.string.select_a_movie), onIconClick = {viewFilterModel.resetUiState(active = true)})
     WheelCard(orientation = orientation,viewWheelModel = viewWheelModel, viewFilterModel = viewFilterModel)
     NavBar(selectedItem, orientation, navController)
 }
@@ -103,7 +103,7 @@ fun UserListScreen(
 
 
     SquareBackgroundHeader(orientation, 2);
-    Header("All movies", onIconClick = {viewFilterModel.resetUiState(active = true)})
+    Header(stringResource(R.string.all_movies), onIconClick = {viewFilterModel.resetUiState(active = true)})
     UserListCard(orientation = orientation, viewUserModel = viewUserModel, viewFilterModel = viewFilterModel,
         coroutineScope = coroutineScope,
         navController = navController)

@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -180,14 +181,14 @@ private fun WheelCardLandScape(
             WheelButton(
                 OnButtonClicked = { scope.launch { viewWheelModel.reloadState(true, viewFilterModel::filmsFilter) }},
                 isEnable = viewWheelModel.uiState.activeButtons,
-                textButton = "Add movie",
+                textButton = stringResource(R.string.add_film),
                 buttonIcon =  Icons.Filled.Add,
                 modifier =  Modifier.padding(20.dp)
             )
             WheelButton(
                 OnButtonClicked = { viewWheelModel.clearFilms() },
                 isEnable = viewWheelModel.uiState.films.isNotEmpty() && viewWheelModel.uiState.activeButtons,
-                textButton = "Clear",
+                textButton = stringResource(R.string.clear),
                 buttonIcon = Icons.Filled.Delete
             )
         }
@@ -283,7 +284,7 @@ fun Wheel(modifier: Modifier,
                                     else  (index) % 4  + 1];
             SpinWheelItem(colors = colors.toPersistentList()) {
                 AutoResizedText(
-                    text = if(films.isEmpty()) "Empty List " else films[index].name,
+                    text = if(films.isEmpty()) stringResource(R.string.empty_list) else films[index].name,
                     style = TextStyle(color = Color.White, fontSize =
                         if(orientation == 0) 18.sp else 10.sp),
                     modifier = Modifier
@@ -316,7 +317,6 @@ fun Wheel(modifier: Modifier,
         SpinWheelComponent(spinState)
         Button(
             onClick = {
-
                 coroutineScope.launch {
                     activeButtons(false)
                     spinState.launchInfinite()
@@ -325,7 +325,8 @@ fun Wheel(modifier: Modifier,
                     spinState.stoppingWheel(randomNumber)
                     delay(8000)
                     activeButtons(true)
-                    Toast.makeText(mLocalContext, "Random film is: " + films[randomNumber].name, Toast.LENGTH_LONG).show()
+                    Toast.makeText(mLocalContext,
+                        mLocalContext.getString(R.string.random_film_is) + films[randomNumber].name, Toast.LENGTH_LONG).show()
                 }
             },
             enabled = films.isNotEmpty(),

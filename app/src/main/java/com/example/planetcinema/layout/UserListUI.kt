@@ -36,10 +36,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.planetcinema.PlaneCinemaScreen
+import com.example.planetcinema.R
 import com.example.planetcinema.data.Film
 import com.example.planetcinema.view.FilterViewModel
 import com.example.planetcinema.view.UserListViewModel
@@ -111,7 +113,9 @@ private fun UserListScrollPortrait(
             items(viewUserModel.uiState.filmList.size + 1) { index ->
                 UserListElement(
                         film = if (index != viewUserModel.uiState.filmList.size) viewUserModel.uiState.filmList[index]
-                                else Film(name = "#???#", autor = "#???#", mark = -1.0f, url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTXtOwPfVadN_I7YzkGc_CzjwOTNOvzjNxsg&usqp=CAU") ,
+                                else Film(name = stringResource(R.string.error_argument), autor =stringResource(R.string.error_argument),
+                            mark = -1.0f, url = stringResource(R.string.new_film_image)
+                        ) ,
                         onCheckedValue = {
                             if (index != viewUserModel.uiState.filmList.size) {
                                 if(viewUserModel.uiState.filmList[index].isWatched) {
@@ -193,10 +197,10 @@ private fun UserListScrollLandscape(
                     UserListElement(
                         film = if (index < result) viewUserModel.uiState.filmList[index]
                         else Film(
-                            name = "#???#",
-                            autor = "#???#",
+                            name = stringResource(R.string.error_argument),
+                            autor = stringResource(R.string.error_argument),
                             mark = -1.0f,
-                            url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTXtOwPfVadN_I7YzkGc_CzjwOTNOvzjNxsg&usqp=CAU"
+                            url = stringResource(R.string.new_film_image)
                         ),
                         onCheckedValue = {
                             if (index < result) {
@@ -239,10 +243,10 @@ private fun UserListScrollLandscape(
                         UserListElement(
                             film = if (secondIndex != index) viewUserModel.uiState.filmList[secondIndex]
                             else Film(
-                                name = "#???#",
-                                autor = "#???#",
+                                name = stringResource(R.string.error_argument),
+                                autor = stringResource(R.string.error_argument),
                                 mark = -1.0f,
-                                url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTXtOwPfVadN_I7YzkGc_CzjwOTNOvzjNxsg&usqp=CAU"
+                                url = stringResource(R.string.new_film_image)
                             ),
                             onCheckedValue = {
                                 if (secondIndex != index) {
@@ -374,7 +378,7 @@ fun UserListDialog(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "And what do you think of this film? Set the mark of this film.",
+                        text = stringResource(R.string.question_adding_mark),
                     )
                     TextField(value = viewUserModel.uiState.filmMarkValue,
                         onValueChange = { viewUserModel.actualizationDialog(active = true, mark = it)},
@@ -382,7 +386,7 @@ fun UserListDialog(
                         maxLines = 1,
                         singleLine = true,
                         isError = viewUserModel.uiState.isDialogError,
-                        label = { Text(text = "Mark") },
+                        label = { Text(text = stringResource(R.string.mark)) },
                         modifier = Modifier.padding(bottom = 10.dp)
                     )
                     Spacer(modifier = Modifier.height(24.dp))
@@ -395,12 +399,12 @@ fun UserListDialog(
                                 onCloseDialog()
                             },
                         ) {
-                            Text("Confirm")
+                            Text(stringResource(R.string.confirm))
                         }
                         TextButton(
                             onClick = onCloseDialog,
                         ) {
-                            Text("Cancel")
+                            Text(stringResource(R.string.cancel))
                         }
                     }
                 }

@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.planetcinema.R
 import com.example.planetcinema.swipe.CreateSwipeAction
@@ -98,14 +99,16 @@ private fun SwappingCardLandScape(viewSwapModel: SwapViewModel,
         val left = CreateSwipeAction(
             OnSwipe = {
                 onSwapLeft()
-                Toast.makeText(mLocalContext, "Next film", Toast.LENGTH_SHORT).show()
+                Toast.makeText(mLocalContext,
+                    mLocalContext.getString(R.string.next_film), Toast.LENGTH_SHORT).show()
             },
             background = Color(0xFF640000)
         )
         val right = CreateSwipeAction(
             OnSwipe = {
                 onSwapRight()
-                Toast.makeText(mLocalContext, "Film saved", Toast.LENGTH_SHORT).show()
+                Toast.makeText(mLocalContext,
+                    mLocalContext.getString(R.string.film_saved), Toast.LENGTH_SHORT).show()
             },
             background = Color(0xFF006400)
 
@@ -141,7 +144,7 @@ private fun SwappingCardLandScape(viewSwapModel: SwapViewModel,
                         .background(Color(0xFF3E3F3F))
                 ) {
                     BasicAsyncImage(
-                        url = viewSwapModel.uiState.actualFilm?.url ?: "https://static.thenounproject.com/png/1527904-200.png",
+                        url = viewSwapModel.uiState.actualFilm?.url ?: stringResource(R.string.error_image),
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
                             .fillMaxHeight(0.9f)
@@ -156,9 +159,10 @@ private fun SwappingCardLandScape(viewSwapModel: SwapViewModel,
                             .padding(start = 15.dp)
                     ) {
                         TextInfoFilm(
-                            filmName = viewSwapModel.uiState.actualFilm?.name ?: "None film",
-                            filmAutor =  viewSwapModel.uiState.actualFilm?.autor ?: "#???#",
-                            filmMark = if (viewSwapModel.uiState.actualFilm?.mark.toString() == "null") "?" else viewSwapModel.uiState.actualFilm?.mark.toString(),
+                            filmName = viewSwapModel.uiState.actualFilm?.name ?: stringResource(R.string.none_film),
+                            filmAutor =  viewSwapModel.uiState.actualFilm?.autor ?: stringResource(R.string.error_argument),
+                            filmMark = if (viewSwapModel.uiState.actualFilm?.mark.toString() == "null")
+                                stringResource(R.string.question_mark) else viewSwapModel.uiState.actualFilm?.mark.toString(),
                             sizeMainText = 25,
                             sizeSmallText = 20,
                             smallTextModifier = Modifier.padding(top = 10.dp),
@@ -211,14 +215,14 @@ private fun SwappingCardPortrait(viewSwapModel: SwapViewModel,
     val left = CreateSwipeAction(
         OnSwipe = {
             onSwapLeft()
-            Toast.makeText(mLocalContext, "Next film", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mLocalContext,  mLocalContext.getString(R.string.next_film), Toast.LENGTH_SHORT).show()
                   },
                 background = Color(0xFF640000)
     )
     val right = CreateSwipeAction(
         OnSwipe = {
             onSwapRight()
-            Toast.makeText(mLocalContext, "Film saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mLocalContext,  mLocalContext.getString(R.string.film_saved), Toast.LENGTH_SHORT).show()
                   },
         background = Color(0xFF006400)
     )
@@ -238,7 +242,7 @@ private fun SwappingCardPortrait(viewSwapModel: SwapViewModel,
         ) {
            Column (horizontalAlignment = Alignment.CenterHorizontally) {
            BasicAsyncImage(
-               url = viewSwapModel.uiState.actualFilm?.url ?: "https://static.thenounproject.com/png/1527904-200.png",
+               url = viewSwapModel.uiState.actualFilm?.url ?: stringResource(R.string.error_image),
                modifier = Modifier
                    .fillMaxWidth(0.8f)
                    .fillMaxHeight(0.75f)
@@ -257,9 +261,10 @@ private fun SwappingCardPortrait(viewSwapModel: SwapViewModel,
                         .padding(8.dp)
                 ) {
                     TextInfoFilm(
-                        filmName = viewSwapModel.uiState.actualFilm?.name ?: "None film",
-                        filmAutor =  viewSwapModel.uiState.actualFilm?.autor ?: "#???#",
-                        filmMark = if (viewSwapModel.uiState.actualFilm?.mark.toString() == "null") "?" else viewSwapModel.uiState.actualFilm?.mark.toString(),
+                        filmName = viewSwapModel.uiState.actualFilm?.name ?: stringResource(R.string.none_film),
+                        filmAutor =  viewSwapModel.uiState.actualFilm?.autor ?: stringResource(R.string.error_argument),
+                        filmMark = if (viewSwapModel.uiState.actualFilm?.mark.toString() == "null") stringResource(R.string.question_mark)
+                                        else viewSwapModel.uiState.actualFilm?.mark.toString(),
                         sizeMainText = 20,
                         sizeSmallText = 15,
                         smallTextHorizontalArrangement = Arrangement.End,

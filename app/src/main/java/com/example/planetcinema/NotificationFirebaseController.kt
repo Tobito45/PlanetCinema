@@ -17,7 +17,7 @@ class NotificationFirebaseController : ComponentActivity() {
         if (it) {
             Toast.makeText(
                 this@NotificationFirebaseController,
-                "Post notification permission granted!",
+                getString(R.string.post_notification_permission_granted),
                 Toast.LENGTH_SHORT
             ).show()
         }

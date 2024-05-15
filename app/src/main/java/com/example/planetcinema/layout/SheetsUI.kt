@@ -37,11 +37,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.example.planetcinema.R
 import com.example.planetcinema.data.Film
 import com.example.planetcinema.view.FilterViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -105,7 +107,7 @@ fun FilterSheet (viewModel: FilterViewModel,
         } ) {
         content()
         BasicSheetCard {
-            BasicSheetText(text = "Sort films contains ", modifier = Modifier.fillMaxSize(0.5f))
+            BasicSheetText(text = stringResource(R.string.sort_films_contains), modifier = Modifier.fillMaxSize(0.5f))
             TextField(
                 value = viewModel.uiState.filmContainsWord,
                 onValueChange =  { viewModel.resetUiState(filmContainsWord = it)},
@@ -116,7 +118,7 @@ fun FilterSheet (viewModel: FilterViewModel,
             )
         }
         BasicSheetCard {
-            BasicSheetText(text = "Sort authors contains ", modifier = Modifier.fillMaxSize(0.5f))
+            BasicSheetText(text = stringResource(R.string.sort_authors_contains), modifier = Modifier.fillMaxSize(0.5f))
             TextField(
                 value = viewModel.uiState.autorContainsWord,
                 onValueChange =  { viewModel.resetUiState(autorContainsWord = it)},
@@ -127,7 +129,7 @@ fun FilterSheet (viewModel: FilterViewModel,
             )
         }
         BasicSheetCard {
-            BasicSheetText(text = "Sort films by marks", modifier = Modifier.fillMaxSize(0.5f))
+            BasicSheetText(text = stringResource(R.string.sort_films_by_marks), modifier = Modifier.fillMaxSize(0.5f))
             Column {
                 val rangeStart = "%.1f".format(rangeSliderState.activeRangeStart).replace(",",".")
                 val rangeEnd = "%.1f".format(rangeSliderState.activeRangeEnd).replace(",",".")
@@ -171,7 +173,7 @@ fun FilterUserListSheet(viewModel: FilterViewModel,
             onCloseButton = onCloseButton
         ) {
             BasicSheetCard {
-                BasicSheetText(text = "Sort films contains ", modifier = Modifier.fillMaxSize(0.5f))
+                BasicSheetText(text = stringResource(R.string.sort_films_by_watched), modifier = Modifier.fillMaxSize(0.5f))
                 Checkbox(
                     checked = viewModel.uiState.isWatchedFilms,
                     onCheckedChange = { viewModel.resetUiState(isWatchedFilms = it) },
@@ -221,7 +223,7 @@ fun BasicSheet(sheetState: SheetState,
                 modifier = Modifier.padding(top = 10.dp, bottom = 30.dp)
             ) {
                 Text(
-                    text = "Hide",
+                    text = stringResource(R.string.hide),
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )

@@ -1,4 +1,36 @@
 <resources>
     <string name="app_name">PlanetCinema</string>
     <string name="discover">Discover</string>
+    <string name="error_argument">#???#</string>
+    <string name="error_massage">\???</string>
+    <string name="by">"By "</string>
+    <string name="basic_value_mark">-1.0</string>
+    <string name="question_mark">\?</string>
+    <string name="from_ten">/10</string>
+    <string name="add_film">Add Film</string>
+    <string name="edit_film">Edit Film</string>
+    <string name="name">Name</string>
+    <string name="author">Author</string>
+    <string name="mark">Mark</string>
+    <string name="image_url">Image (url)</string>
+    <string name="submit">Submit</string>
+    <string name="sort_films_contains">"Sort films contains "</string>
+    <string name="sort_authors_contains">"Sort authors contains "</string>
+    <string name="sort_films_by_marks">Sort films by marks</string>
+    <string name="sort_films_by_watched">"Sort films by watched "</string>
+    <string name="hide">Hide</string>
+    <string name="next_film">Next film</string>
+    <string name="film_saved">Film saved</string>
+    <string name="error_image">https://static.thenounproject.com/png/1527904-200.png</string>
+    <string name="none_film">None film</string>
+    <string name="new_film_image"><![CDATA[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTXtOwPfVadN_I7YzkGc_CzjwOTNOvzjNxsg&usqp=CAU]]></string>
+    <string name="question_adding_mark">And what do you think of this film? Set the mark of this film.</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="clear">Clear</string>
+    <string name="empty_list">"Empty List "</string>
+    <string name="random_film_is">"Random film is: "</string>
+    <string name="post_notification_permission_granted">Post notification permission granted!</string>
+    <string name="select_a_movie">Select a movie</string>
+    <string name="all_movies">All movies</string>
 </resources>

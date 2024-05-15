@@ -13,7 +13,6 @@ interface AppContainer {
     val filmsFireRepository: FilmFirebaseRepository
 }
 
-
 class AppDataContainer(private val context: Context) : AppContainer {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)

@@ -1,6 +1,5 @@
 package com.example.planetcinema.view
 
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.runtime.getValue
@@ -75,7 +74,6 @@ class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel() 
         val updateFilms = filmRepository.getCheckedFilmsStream().first()
         val sortedFilms = sorting(updateFilms)
         val copy = uiState
-        Log.i("TESTIC", sortedFilms.size.toString())
         uiState = WheelUiState(
             films = sortedFilms,
             filmsInWheel = copy.filmsInWheel,

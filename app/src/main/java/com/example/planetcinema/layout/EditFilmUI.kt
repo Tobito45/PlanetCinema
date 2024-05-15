@@ -27,9 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.planetcinema.R
 import com.example.planetcinema.view.EditViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -47,7 +49,7 @@ fun EditFilmCard(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(
-                    text = if(viewModel.uiState.isAdding) "Add Film" else "Edit Film",
+                    text = if(viewModel.uiState.isAdding) stringResource(R.string.add_film) else stringResource(R.string.edit_film),
                     fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateUp) {
@@ -62,38 +64,43 @@ fun EditFilmCard(
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(
-                start = innerPadding.calculateStartPadding(LocalLayoutDirection.current) + 15.dp,
-                top = innerPadding.calculateTopPadding() + if (orientation == Configuration.ORIENTATION_LANDSCAPE) 5.dp else 20.dp,
-                end = innerPadding.calculateEndPadding(LocalLayoutDirection.current) + 15.dp,
-                bottom = 20.dp
-                ).verticalScroll(rememberScrollState()),
+            modifier = Modifier
+                .padding(
+                    start = innerPadding.calculateStartPadding(LocalLayoutDirection.current) + 15.dp,
+                    top = innerPadding.calculateTopPadding() + if (orientation == Configuration.ORIENTATION_LANDSCAPE) 5.dp else 20.dp,
+                    end = innerPadding.calculateEndPadding(LocalLayoutDirection.current) + 15.dp,
+                    bottom = 20.dp
+                )
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(
                 value = viewModel.uiState.inputName,
                 onValueChange =  { viewModel.editDataFilm(newName = it)},
-                label = { Text("Name") },
+                label = { Text(stringResource(R.string.name)) },
                 isError = if(viewModel.uiState.isError && viewModel.uiState.inputName.isEmpty()) true else false,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
             )
             TextField(
                 value = viewModel.uiState.inputAutor,
                 onValueChange = { viewModel.editDataFilm(newAutor = it)},
-                label = { Text("Author") },
+                label = { Text(stringResource(R.string.author)) },
                 isError = if(viewModel.uiState.isError && viewModel.uiState.inputAutor.isEmpty()) true else false,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
 
             )
             TextField(
                 value = viewModel.uiState.inputMark,
                 onValueChange =  { viewModel.editDataFilm(newMark = it)},
-                label = { Text("Mark") },
+                label = { Text(stringResource(R.string.mark)) },
                 isError = if(viewModel.uiState.isError && viewModel.uiState.inputMark.isEmpty()) true else false,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
 
             )
@@ -101,8 +108,9 @@ fun EditFilmCard(
                 value = viewModel.uiState.inputUrl,
                 onValueChange =  { viewModel.editDataFilm(newUrl = it)},
                 isError = if(viewModel.uiState.isError && viewModel.uiState.inputUrl.isEmpty()) true else false,
-                label = { Text("Image (url)") },
-                modifier = Modifier.fillMaxWidth()
+                label = { Text(stringResource(R.string.image_url)) },
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
             )
             Button(
@@ -117,10 +125,11 @@ fun EditFilmCard(
                     containerColor = Color(0xFF3E3F3F),
                     disabledContainerColor = Color(0xFF181818),
                 ),
-                modifier = Modifier.fillMaxWidth(0.6f)
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
                     .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 30.dp)
             ) {
-                Text(text = "Submit".uppercase(),
+                Text(text = stringResource(R.string.submit).uppercase(),
                     color = Color.White,
                     fontWeight = FontWeight.Bold)
 

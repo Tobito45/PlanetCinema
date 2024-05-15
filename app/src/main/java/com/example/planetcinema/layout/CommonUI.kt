@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -44,22 +45,24 @@ fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String, userMa
         Column {
             Row {
                 Text(
-                    text = if (filmName != "#???#") filmName else "???",
+                    text = if (filmName != stringResource(R.string.error_argument)) filmName else stringResource(
+                        R.string.error_massage
+                    ),
                     color = Color.White,
                     fontWeight = FontWeight.Normal,
                     fontSize = sizeMainText.sp
                 )
             }
-            val annotatedString = if (filmAutor != "#???#") {
+            val annotatedString = if (filmAutor != stringResource(R.string.error_argument)) {
                 buildAnnotatedString {
-                    append("By ")
+                    append(stringResource(R.string.by))
                     withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
                         append(filmAutor)
                     }
                 }
             } else {
                 buildAnnotatedString {
-                    append("???")
+                    append(stringResource(R.string.error_massage))
                 }
             }
 
@@ -68,7 +71,7 @@ fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String, userMa
                 color = Color.White,
                 fontWeight = FontWeight.Light,
                 fontSize = sizeSmallText.sp,
-                modifier = smallTextModifier// Modifier.padding(top = 10.dp)
+                modifier = smallTextModifier
             )
         }
         Row (
@@ -85,7 +88,7 @@ fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String, userMa
             )
 
             Text(
-                text = if(filmMark != "-1.0") filmMark else "?",
+                text = if(filmMark != stringResource(R.string.basic_value_mark)) filmMark else stringResource(R.string.question_mark),
                 color = Color.White,
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Light,
@@ -101,7 +104,7 @@ fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String, userMa
                 )
             }
             Text(
-                text = "/10",
+                text = stringResource(R.string.from_ten),
                 color = Color.Gray,
                 fontWeight = FontWeight.Light,
                 fontSize = 15.sp,

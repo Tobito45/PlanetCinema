@@ -1,6 +1,5 @@
 package com.example.planetcinema.data.firebase
 
-import android.util.Log
 import com.example.planetcinema.data.Film
 
 class OfflineFilmFirebaseRepository(private val dataBase: FirebaseDataBase) : FilmFirebaseRepository {
@@ -18,7 +17,6 @@ class OfflineFilmFirebaseRepository(private val dataBase: FirebaseDataBase) : Fi
 
     override suspend fun getAllFilmWithout(list: List<Film>): List<Film> {
         val films = dataBase.getFilms()
-        Log.i("TESTIC", list.size.toString())
         list.forEach { film ->
             var detectedFilm : Film? = null
             films.forEach fire@{fireFilm ->
@@ -27,7 +25,6 @@ class OfflineFilmFirebaseRepository(private val dataBase: FirebaseDataBase) : Fi
                     return@fire
                 }
             }
-            Log.i("TESTIC", detectedFilm?.name ?: "kek")
             if(detectedFilm != null)
                 films -= detectedFilm !!
         }
