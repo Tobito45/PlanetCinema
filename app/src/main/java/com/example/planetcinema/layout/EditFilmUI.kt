@@ -77,23 +77,23 @@ fun EditFilmCard(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val generalModifier = Modifier
+                .fillMaxWidth()
+                .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
+
             TextField(
                 value = viewModel.uiState.inputName,
                 onValueChange =  { viewModel.editDataFilm(newName = it)},
                 label = { Text(stringResource(R.string.name)) },
                 isError = if(viewModel.uiState.isError && viewModel.uiState.inputName.isEmpty()) true else false,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
+                modifier = generalModifier
             )
             TextField(
                 value = viewModel.uiState.inputAutor,
                 onValueChange = { viewModel.editDataFilm(newAutor = it)},
                 label = { Text(stringResource(R.string.author)) },
                 isError = if(viewModel.uiState.isError && viewModel.uiState.inputAutor.isEmpty()) true else false,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
+                modifier = generalModifier
 
             )
             TextField(
@@ -102,9 +102,7 @@ fun EditFilmCard(
                 label = { Text(stringResource(R.string.mark)) },
                 isError = if(viewModel.uiState.isError && viewModel.uiState.inputMark.isEmpty()) true else false,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
+                modifier = generalModifier
 
             )
             TextField(
@@ -112,29 +110,26 @@ fun EditFilmCard(
                 onValueChange =  { viewModel.editDataFilm(newUrl = it)},
                 isError = if(viewModel.uiState.isError && viewModel.uiState.inputUrl.isEmpty()) true else false,
                 label = { Text(stringResource(R.string.image_url)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
+                modifier = generalModifier
             )
+
             Row(horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)) {
+                modifier = generalModifier)
+            {
                 Text(text = stringResource(R.string.did_you_see_that_film),
                     color = Color.White)
                 Checkbox(checked = viewModel.uiState.isWatched,
                     onCheckedChange = {viewModel.editDataFilm(isWatched = it)})
             }
+
             if(viewModel.uiState.isWatched) {
                 TextField(
                     value = viewModel.uiState.inputUserMark,
                     onValueChange = { viewModel.editDataFilm(newUserMark = it) },
                     isError = if (viewModel.uiState.isError && viewModel.uiState.inputUserMark.isEmpty()) true else false,
                     label = { Text(stringResource(R.string.your_mark)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
+                    modifier = generalModifier
                 )
             }
 

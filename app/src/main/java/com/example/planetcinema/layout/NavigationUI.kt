@@ -29,7 +29,6 @@ val items = listOf(
 
 @Composable
 fun NavBar(selectedItem: Int, orientation : Int, navController: NavController) { //mb to view model
-    //NAVBAR
     val navbarSize = if (orientation == Configuration.ORIENTATION_PORTRAIT) 1f else 0.6f
     val navbarClip = if (orientation == Configuration.ORIENTATION_PORTRAIT) 0.dp else 20.dp
 

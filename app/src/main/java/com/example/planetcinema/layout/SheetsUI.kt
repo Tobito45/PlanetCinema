@@ -54,30 +54,38 @@ import kotlinx.coroutines.launch
 @Composable
 fun WheelBottomSheet (sheetState: SheetState,
                       scope: CoroutineScope,
+                      canBeShow : Boolean,
                       films : List<Film>,
                       containFilm : (Film) -> Boolean,
                       onDismissRequest : () -> Unit,
                       onCloseButton : () -> Unit,
                       filmAdder : (Film) -> Unit
 ) {
-    BasicSheet(
-        sheetState = sheetState,
-        scope = scope,
-        onDismissRequest = onDismissRequest,
-        onCloseButton = onCloseButton) {
-        films.forEach { film ->
-            BasicSheetCard {
-                BasicSheetText(text = film.name)
-                Button(onClick = { filmAdder(film) },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF3E3F3F),
-                        disabledContainerColor = Color(0xFF181818),
-                    ),
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Icon(imageVector = if(containFilm(film)) Icons.Filled.Done else Icons.Filled.Add, contentDescription = null,
-                        tint = Color.White)
+    if (canBeShow) {
+        BasicSheet(
+            sheetState = sheetState,
+            scope = scope,
+            onDismissRequest = onDismissRequest,
+            onCloseButton = onCloseButton
+        ) {
+            films.forEach { film ->
+                BasicSheetCard {
+                    BasicSheetText(text = film.name)
+                    Button(
+                        onClick = { filmAdder(film) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF3E3F3F),
+                            disabledContainerColor = Color(0xFF181818),
+                        ),
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.padding(10.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (containFilm(film)) Icons.Filled.Done else Icons.Filled.Add,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
                 }
             }
         }
@@ -108,25 +116,13 @@ fun FilterSheet (viewModel: FilterViewModel,
         content()
         BasicSheetCard {
             BasicSheetText(text = stringResource(R.string.sort_films_contains), modifier = Modifier.fillMaxSize(0.5f))
-            TextField(
-                value = viewModel.uiState.filmContainsWord,
-                onValueChange =  { viewModel.resetUiState(filmContainsWord = it)},
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                singleLine = true,
-                modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
-            )
+            BasicSheetTextField(value = viewModel.uiState.filmContainsWord,
+                onValueChange =  { viewModel.resetUiState(filmContainsWord = it)})
         }
         BasicSheetCard {
             BasicSheetText(text = stringResource(R.string.sort_authors_contains), modifier = Modifier.fillMaxSize(0.5f))
-            TextField(
-                value = viewModel.uiState.autorContainsWord,
-                onValueChange =  { viewModel.resetUiState(autorContainsWord = it)},
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                singleLine = true,
-                modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
-            )
+            BasicSheetTextField(value = viewModel.uiState.autorContainsWord,
+                onValueChange =  { viewModel.resetUiState(autorContainsWord = it)})
         }
         BasicSheetCard {
             BasicSheetText(text = stringResource(R.string.sort_films_by_marks), modifier = Modifier.fillMaxSize(0.5f))
@@ -174,19 +170,13 @@ fun FilterUserListAndWheelSheet(viewModel: FilterViewModel,
         ) {
             BasicSheetCard {
                 BasicSheetText(stringResource(R.string.only_watched_films), modifier = Modifier.fillMaxSize(0.5f))
-                Checkbox(
-                    checked = viewModel.uiState.isWatchedFilms,
-                    onCheckedChange = { viewModel.resetUiState(isWatchedFilms = it, onlyNonWatchedFilms = false) },
-                    modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
-                )
+                BasicSheetCheckBox(checked = viewModel.uiState.isWatchedFilms,
+                    onCheckedChange = { viewModel.resetUiState(isWatchedFilms = it, onlyNonWatchedFilms = false) })
             }
             BasicSheetCard {
                 BasicSheetText(stringResource(R.string.only_non_watched_films), modifier = Modifier.fillMaxSize(0.5f))
-                Checkbox(
-                    checked = viewModel.uiState.onlyNonWatchedFilms,
-                    onCheckedChange = { viewModel.resetUiState(onlyNonWatchedFilms = it, isWatchedFilms = false) },
-                    modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
-                )
+                BasicSheetCheckBox(checked = viewModel.uiState.onlyNonWatchedFilms,
+                    onCheckedChange = { viewModel.resetUiState(onlyNonWatchedFilms = it, isWatchedFilms = false) })
             }
         }
     }
@@ -260,4 +250,25 @@ fun BasicSheetCard(
 @Composable
 fun BasicSheetText(text : String, modifier: Modifier = Modifier) {
     Text(text = text, color = Color.White, modifier = modifier.padding(10.dp))
+}
+
+@Composable
+fun BasicSheetCheckBox(checked : Boolean, onCheckedChange : (Boolean) -> Unit) {
+    Checkbox(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
+    )
+}
+
+@Composable
+fun BasicSheetTextField(value : String, onValueChange : (String) -> Unit) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        singleLine = true,
+        modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
+    )
 }

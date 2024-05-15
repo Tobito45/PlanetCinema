@@ -1,7 +1,6 @@
 package com.example.planetcinema.layout
 
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.planetcinema.R
-import com.example.planetcinema.swipe.CreateSwipeAction
+import com.example.planetcinema.swipe.CreateLeftSwipeAction
+import com.example.planetcinema.swipe.CreateRightwipeAction
 import com.example.planetcinema.view.FilterViewModel
 import com.example.planetcinema.view.SwapViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -96,33 +96,17 @@ private fun SwappingCardLandScape(viewSwapModel: SwapViewModel,
     ) {
         val mLocalContext = LocalContext.current
 
-        val left = CreateSwipeAction(
-            OnSwipe = {
-                onSwapLeft()
-                Toast.makeText(mLocalContext,
-                    mLocalContext.getString(R.string.next_film), Toast.LENGTH_SHORT).show()
-            },
-            background = Color(0xFF640000)
-        )
-        val right = CreateSwipeAction(
-            OnSwipe = {
-                onSwapRight()
-                Toast.makeText(mLocalContext,
-                    mLocalContext.getString(R.string.film_saved), Toast.LENGTH_SHORT).show()
-            },
-            background = Color(0xFF006400)
+        val left = CreateLeftSwipeAction(onSwapLeft, mLocalContext)
+        val right = CreateRightwipeAction(onSwapRight, mLocalContext)
 
-        )
-
-        Icon(
-            painter = painterResource(id = R.drawable.finger_left),
-            contentDescription = null,
-            tint = Color.White,
+        IconSwapping(
+            imageId = R.drawable.finger_left,
             modifier = Modifier
                 .fillMaxWidth(0.1f)
                 .fillMaxHeight()
                 .padding(8.dp)
         )
+
         SwipeableActionsBox(
             swipeThreshold = 100.dp,
             startActions = listOf(left),
@@ -185,10 +169,8 @@ private fun SwappingCardLandScape(viewSwapModel: SwapViewModel,
             }
         }
 
-        Icon(
-            painter = painterResource(id = R.drawable.finger_right),
-            contentDescription = null,
-            tint = Color.White,
+        IconSwapping(
+            imageId = R.drawable.finger_right,
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
@@ -212,20 +194,9 @@ private fun SwappingCardPortrait(viewSwapModel: SwapViewModel,
 {
     val mLocalContext = LocalContext.current
 
-    val left = CreateSwipeAction(
-        OnSwipe = {
-            onSwapLeft()
-            Toast.makeText(mLocalContext,  mLocalContext.getString(R.string.next_film), Toast.LENGTH_SHORT).show()
-                  },
-                background = Color(0xFF640000)
-    )
-    val right = CreateSwipeAction(
-        OnSwipe = {
-            onSwapRight()
-            Toast.makeText(mLocalContext,  mLocalContext.getString(R.string.film_saved), Toast.LENGTH_SHORT).show()
-                  },
-        background = Color(0xFF006400)
-    )
+    val left = CreateLeftSwipeAction(onSwapLeft, mLocalContext)
+    val right = CreateRightwipeAction(onSwapRight, mLocalContext)
+
 
     Column(
         modifier = Modifier
@@ -288,16 +259,15 @@ private fun SwappingCardPortrait(viewSwapModel: SwapViewModel,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxSize()
         ) {
-            Icon(painter = painterResource(id = R.drawable.finger_left),
-                contentDescription = null,
-                tint = Color.White,
+            IconSwapping(
+                imageId = R.drawable.finger_left,
                 modifier = Modifier
                     .fillMaxWidth(0.25f)
                     .fillMaxHeight(0.8f)
-                    .padding(start = 8.dp))
-            Icon(painter = painterResource(id = R.drawable.finger_right),
-                contentDescription = null,
-                tint = Color.White,
+                    .padding(end = 8.dp)
+            )
+            IconSwapping(
+                imageId = R.drawable.finger_right,
                 modifier = Modifier
                     .fillMaxWidth(0.25f)
                     .fillMaxHeight(0.8f)
@@ -308,6 +278,15 @@ private fun SwappingCardPortrait(viewSwapModel: SwapViewModel,
     if (viewFilterModel.uiState.showBottomSheet) {
         FilterSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = sliderState)
     }
+}
+
+@Composable
+fun IconSwapping(imageId : Int, modifier: Modifier = Modifier) {
+    Icon(painter = painterResource(id = imageId),
+        contentDescription = null,
+        tint = Color.White,
+        modifier = modifier
+    )
 }
 
 
