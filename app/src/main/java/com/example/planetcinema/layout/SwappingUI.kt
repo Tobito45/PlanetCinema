@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import com.example.planetcinema.R
 import com.example.planetcinema.swipe.CreateLeftSwipeAction
 import com.example.planetcinema.swipe.CreateRightwipeAction
+import com.example.planetcinema.ui.theme.ButtonBackGroundColor
+import com.example.planetcinema.ui.theme.SwipeShadowColor
 import com.example.planetcinema.view.FilterViewModel
 import com.example.planetcinema.view.SwapViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -125,7 +127,7 @@ private fun SwappingCardLandScape(viewSwapModel: SwapViewModel,
                         .fillMaxWidth()
                         .fillMaxHeight(0.95f)
                         .clip(RoundedCornerShape(20.dp))
-                        .background(Color(0xFF3E3F3F))
+                        .background(ButtonBackGroundColor)
                 ) {
                     BasicAsyncImage(
                         url = viewSwapModel.uiState.actualFilm?.url ?: stringResource(R.string.error_image),
@@ -161,7 +163,7 @@ private fun SwappingCardLandScape(viewSwapModel: SwapViewModel,
                         .fillMaxWidth(0.9f)
                         .fillMaxHeight()
                         .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-                        .background(Color(0xFF2F3030))
+                        .background(SwipeShadowColor)
                         .align(Alignment.CenterHorizontally)
                 ) {
 
@@ -224,7 +226,7 @@ private fun SwappingCardPortrait(viewSwapModel: SwapViewModel,
                     .fillMaxWidth(0.8f)
                     .fillMaxHeight(0.5f)
                     .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-                    .background(Color(0xFF3E3F3F))
+                    .background(ButtonBackGroundColor)
             ) {
                 Row(
                     modifier = Modifier
@@ -249,7 +251,7 @@ private fun SwappingCardPortrait(viewSwapModel: SwapViewModel,
                     .fillMaxWidth(0.65f)
                     .fillMaxHeight(0.2f)
                     .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-                    .background(Color(0xFF2F3030))
+                    .background(SwipeShadowColor)
             )
            }
 

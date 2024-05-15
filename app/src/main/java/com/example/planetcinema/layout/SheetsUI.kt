@@ -45,6 +45,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.planetcinema.R
 import com.example.planetcinema.data.film.Film
+import com.example.planetcinema.ui.theme.ButtonBackGroundColor
+import com.example.planetcinema.ui.theme.DisableButtonBackGroundColor
+import com.example.planetcinema.ui.theme.SheetBackGroundColor
+import com.example.planetcinema.ui.theme.SquareBackGroundColor
 import com.example.planetcinema.view.FilterViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -74,8 +78,8 @@ fun WheelBottomSheet (sheetState: SheetState,
                     Button(
                         onClick = { filmAdder(film) },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF3E3F3F),
-                            disabledContainerColor = Color(0xFF181818),
+                            containerColor = ButtonBackGroundColor,
+                            disabledContainerColor = DisableButtonBackGroundColor,
                         ),
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.padding(10.dp)
@@ -193,7 +197,7 @@ fun BasicSheet(sheetState: SheetState,
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
-        containerColor = Color(0xFF242424)
+        containerColor = SheetBackGroundColor
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -207,8 +211,8 @@ fun BasicSheet(sheetState: SheetState,
 
             Button(
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF3E3F3F),
-                    disabledContainerColor = Color(0xFF181818),
+                    containerColor = ButtonBackGroundColor,
+                    disabledContainerColor = DisableButtonBackGroundColor,
                 ),
                 shape = RoundedCornerShape(10.dp),
                 onClick = {
@@ -241,7 +245,7 @@ fun BasicSheetCard(
             .padding(top = 10.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
-            .background(Color(0xFF1B1C1F))
+            .background(SquareBackGroundColor)
     ) {
         content()
     }

@@ -35,14 +35,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.planetcinema.starters.PlaneCinemaScreen
 import com.example.planetcinema.R
 import com.example.planetcinema.data.film.Film
+import com.example.planetcinema.starters.PlaneCinemaScreen
+import com.example.planetcinema.ui.theme.ButtonBackGroundColor
+import com.example.planetcinema.ui.theme.CheckBoxUserListColor
 import com.example.planetcinema.view.FilterViewModel
 import com.example.planetcinema.view.UserListViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -152,7 +153,7 @@ private fun UserListScrollPortrait(
                         .height(170.dp)
                         .padding(top = 20.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color(0xFF3E3F3F)),
+                        .background(ButtonBackGroundColor),
                     imageModifier = Modifier
                         .fillMaxWidth(0.4f)
                         .padding(10.dp),
@@ -242,7 +243,7 @@ private fun UserListScrollLandscape(
                             .height(100.dp)
                             .padding(top = 20.dp, end = 10.dp)
                             .clip(RoundedCornerShape(10.dp))
-                            .background(Color(0xFF3E3F3F)),
+                            .background(ButtonBackGroundColor),
                         imageModifier = Modifier
                             .fillMaxWidth(0.3f)
                             .padding(10.dp),
@@ -295,7 +296,7 @@ private fun UserListScrollLandscape(
                                 .height(100.dp)
                                 .padding(top = 20.dp, start = 10.dp)
                                 .clip(RoundedCornerShape(10.dp))
-                                .background(Color(0xFF3E3F3F)),
+                                .background(ButtonBackGroundColor),
                             imageModifier = Modifier
                                 .fillMaxWidth(0.3f)
                                 .padding(10.dp),
@@ -363,7 +364,7 @@ fun UserListElement(film : Film,
                 checked = isChecked,
                 onCheckedChange = { onCheckedValue(film) },
                 colors = CheckboxDefaults.colors(
-                    checkedColor = Color(0xFFF1F8E9)
+                    checkedColor = CheckBoxUserListColor
                 ),
                 modifier = Modifier
                     .align(Alignment.CenterVertically)

@@ -27,6 +27,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.planetcinema.R
+import com.example.planetcinema.ui.theme.RedSquareColor
+import com.example.planetcinema.ui.theme.SquareBackGroundColor
+import com.example.planetcinema.ui.theme.StarColor
 
 @Composable
 fun Header(panelName : String, onIconClick: () -> Unit) {
@@ -76,12 +79,12 @@ fun SquareBackgroundHeader(orientation : Int, menu: Int) {
 private fun SquareBackground() {
     Box(modifier = Modifier
         .fillMaxSize()
-        .background(color = Color(0xFF1B1C1F))) {
+        .background(color = SquareBackGroundColor)) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val strokeWidth = 8f
             val squareSize = size.minDimension * 1.5f - strokeWidth * 2
             drawRoundRect(
-                color = Color(0xFFBF3641),
+                color = RedSquareColor,
                 topLeft = Offset(0f, 0f),
                 size = Size(squareSize, squareSize / 7),
             )
@@ -93,7 +96,7 @@ private fun SquareBackground() {
 private fun RotatedSquareBackground(orientation : Int) {
     Box(modifier = Modifier
         .fillMaxSize()
-        .background(color = Color(0xFF1B1C1F))) {
+        .background(color = SquareBackGroundColor)) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val strokeWidth = 8f
             val squareSize = size.minDimension * 1.5f - strokeWidth * 2
@@ -110,7 +113,7 @@ private fun RotatedSquareBackground(orientation : Int) {
 
             rotate(rotating) {
                 drawRoundRect(
-                    color = Color(0xFFBF3641),
+                    color = StarColor,
                     topLeft = Offset(startX, startY),
                     size = Size(squareSize, squareSize),
                     cornerRadius = CornerRadius(24.dp.toPx())

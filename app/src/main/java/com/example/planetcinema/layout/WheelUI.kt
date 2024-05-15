@@ -44,6 +44,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.planetcinema.R
 import com.example.planetcinema.data.film.Film
+import com.example.planetcinema.ui.theme.ButtonBackGroundColor
+import com.example.planetcinema.ui.theme.DisableButtonBackGroundColor
+import com.example.planetcinema.ui.theme.DisableTextButton
+import com.example.planetcinema.ui.theme.WheelColor1
+import com.example.planetcinema.ui.theme.WheelColor2
+import com.example.planetcinema.ui.theme.WheelColor3
+import com.example.planetcinema.ui.theme.WheelColor4
+import com.example.planetcinema.ui.theme.WheelColor5
 import com.example.planetcinema.view.FilterViewModel
 import com.example.planetcinema.view.WheelViewModel
 import com.lyh.spintest.SpinWheelComponent
@@ -217,8 +225,8 @@ private fun WheelButton(OnButtonClicked : () -> Unit,
         onClick = OnButtonClicked,
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF3E3F3F),
-            disabledContainerColor = Color(0xFF181818),
+            containerColor = ButtonBackGroundColor,
+            disabledContainerColor = DisableButtonBackGroundColor,
             ),
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
         enabled = isEnable,
@@ -232,13 +240,13 @@ private fun WheelButton(OnButtonClicked : () -> Unit,
         ) {
             Text(
                 text = textButton.uppercase(),
-                color = if(isEnable)  Color.White  else Color(0xFF777777),
+                color = if(isEnable)  Color.White  else DisableTextButton,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
             Icon(
                 imageVector = buttonIcon,
-                tint = if(isEnable)  Color.White  else Color(0xFF777777),
+                tint = if(isEnable)  Color.White  else DisableTextButton,
                 contentDescription = null
             )
         }
@@ -254,11 +262,11 @@ fun Wheel(modifier: Modifier,
           animation: Animatable<Float, AnimationVector1D>
 ) {
     var listColors = listOf(
-            listOf(Color(0xFF02315E), Color(0xFF02315E)),
-            listOf(Color(0xFF00457E), Color(0xFF00457E)),
-            listOf(Color(0xFF2F70AF), Color(0xFF2F70AF)),
-            listOf(Color(0xFFB9848C), Color(0xFFB9848C)),
-            listOf(Color(0xFF806491), Color(0xFF806491)),
+            listOf(WheelColor1, WheelColor1),
+            listOf(WheelColor2, WheelColor2),
+            listOf(WheelColor3, WheelColor3),
+            listOf(WheelColor4, WheelColor4),
+            listOf(WheelColor5, WheelColor5),
     )
 
     val items =

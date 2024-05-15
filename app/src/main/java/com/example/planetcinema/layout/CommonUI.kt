@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.planetcinema.R
+import com.example.planetcinema.ui.theme.StarColor
 
 @Composable
 fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String, userMark : String = "", isWatched : Boolean = false,
@@ -81,7 +82,7 @@ fun TextInfoFilm(filmName: String, filmAutor : String, filmMark : String, userMa
             Icon(
                 Icons.Default.Star,
                 contentDescription = null,
-                tint = Color(0xFFFFC700),
+                tint = StarColor,
                 modifier = Modifier
                     .padding(end = 2.dp)
                     .size(28.dp)

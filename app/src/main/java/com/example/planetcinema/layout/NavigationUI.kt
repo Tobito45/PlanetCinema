@@ -18,8 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.planetcinema.starters.PlaneCinemaScreen
 import com.example.planetcinema.R
+import com.example.planetcinema.starters.PlaneCinemaScreen
+import com.example.planetcinema.ui.theme.ButtonBackGroundColor
 
 val items = listOf(
     R.drawable.lottery,
@@ -40,7 +41,7 @@ fun NavBar(selectedItem: Int, orientation : Int, navController: NavController) {
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        NavigationBar(containerColor = Color(0xFF3E3F3F),
+        NavigationBar(containerColor = ButtonBackGroundColor,
             modifier = Modifier
                 .fillMaxWidth(navbarSize)
                 .clip(RoundedCornerShape(topStart = navbarClip, topEnd = navbarClip))) {

@@ -35,6 +35,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.planetcinema.R
+import com.example.planetcinema.ui.theme.ButtonBackGroundColor
+import com.example.planetcinema.ui.theme.DisableButtonBackGroundColor
+import com.example.planetcinema.ui.theme.RedSquareColor
 import com.example.planetcinema.view.EditViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -62,7 +65,7 @@ fun EditFilmCard(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color(0xFFBF3641))
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = RedSquareColor)
             )
         }
     ) { innerPadding ->
@@ -142,8 +145,8 @@ fun EditFilmCard(
                 },
                 shape = MaterialTheme.shapes.small,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF3E3F3F),
-                    disabledContainerColor = Color(0xFF181818),
+                    containerColor = ButtonBackGroundColor,
+                    disabledContainerColor = DisableButtonBackGroundColor,
                 ),
                 modifier = Modifier
                     .fillMaxWidth(0.6f)
