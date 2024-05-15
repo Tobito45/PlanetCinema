@@ -132,7 +132,7 @@ private fun WheelCardPortarait(
             )
             WheelButton(
                 OnButtonClicked = { viewWheelModel.clearFilms() },
-                isEnable = viewWheelModel.uiState.films.isNotEmpty() && viewWheelModel.uiState.activeButtons,
+                isEnable = viewWheelModel.uiState.filmsInWheel.isNotEmpty() && viewWheelModel.uiState.activeButtons,
                 textButton =  "Clear",
                 buttonIcon =  Icons.Filled.Delete
             )
@@ -187,7 +187,7 @@ private fun WheelCardLandScape(
             )
             WheelButton(
                 OnButtonClicked = { viewWheelModel.clearFilms() },
-                isEnable = viewWheelModel.uiState.films.isNotEmpty() && viewWheelModel.uiState.activeButtons,
+                isEnable = viewWheelModel.uiState.filmsInWheel.isNotEmpty() && viewWheelModel.uiState.activeButtons,
                 textButton = stringResource(R.string.clear),
                 buttonIcon = Icons.Filled.Delete
             )
@@ -286,12 +286,12 @@ fun Wheel(modifier: Modifier,
                 AutoResizedText(
                     text = if(films.isEmpty()) stringResource(R.string.empty_list) else films[index].name,
                     style = TextStyle(color = Color.White, fontSize =
-                        if(orientation == 0) 18.sp else 10.sp),
+                        if(orientation == 0) 16.sp else 10.sp),
                     modifier = Modifier
                         .rotate(90f)
                         .padding(
                             start =
-                            if (orientation == 0) 80.dp else 40.dp
+                            if (orientation == 0) 90.dp else 40.dp
                         )
                 )
             }

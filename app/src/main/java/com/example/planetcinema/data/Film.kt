@@ -26,12 +26,15 @@ data class Film (
         return this
     }
 
-    fun setNewInfo(newName : String, newAutor: String, newUrl : String, newMark : Float) : Film {
+    fun setNewInfo(newName : String, newAutor: String, newUrl : String, newMark : Float, newUserMark: Float,
+                   ) : Film {
         name = newName
         autor = newAutor
         url = newUrl
 
         mark = newMark
+        userMark = newUserMark
+        isWatched = newUserMark >= 0.0f
         return this
     }
 }

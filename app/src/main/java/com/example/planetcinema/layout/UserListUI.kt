@@ -386,7 +386,7 @@ fun UserListDialog(
                         maxLines = 1,
                         singleLine = true,
                         isError = viewUserModel.uiState.isDialogError,
-                        label = { Text(text = stringResource(R.string.mark)) },
+                        label = { Text(text = stringResource(R.string.your_mark)) },
                         modifier = Modifier.padding(bottom = 10.dp)
                     )
                     Spacer(modifier = Modifier.height(24.dp))

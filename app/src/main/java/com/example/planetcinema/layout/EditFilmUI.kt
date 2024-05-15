@@ -1,7 +1,9 @@
 package com.example.planetcinema.layout
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -113,6 +116,28 @@ fun EditFilmCard(
                     .fillMaxWidth()
                     .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
             )
+            Row(horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)) {
+                Text(text = stringResource(R.string.did_you_see_that_film),
+                    color = Color.White)
+                Checkbox(checked = viewModel.uiState.isWatched,
+                    onCheckedChange = {viewModel.editDataFilm(isWatched = it)})
+            }
+            if(viewModel.uiState.isWatched) {
+                TextField(
+                    value = viewModel.uiState.inputUserMark,
+                    onValueChange = { viewModel.editDataFilm(newUserMark = it) },
+                    isError = if (viewModel.uiState.isError && viewModel.uiState.inputUserMark.isEmpty()) true else false,
+                    label = { Text(stringResource(R.string.your_mark)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 15.dp else 20.dp)
+                )
+            }
+
             Button(
                 onClick = {
                           scope.launch {

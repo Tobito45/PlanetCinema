@@ -30,19 +30,24 @@ class EditViewModel(private val filmRepository: FilmsRepository) : ViewModel() {
                  inputAutor = gettedFilm?.autor ?: "",
                  inputMark = gettedFilm?.mark.toString(),
                  inputUrl = gettedFilm?.url ?: "",
+                 inputUserMark = if(gettedFilm == null || gettedFilm.userMark == -1.0f) "" else gettedFilm.userMark.toString(),
              )
          }
     }
-    fun editDataFilm(newName: String? = null, newAutor: String? = null, newMark : String? = null, newUrl : String? = null, isError: Boolean = false) {
+    fun editDataFilm(newName: String? = null, newAutor: String? = null, newMark : String? = null,
+                     newUrl : String? = null,  newUserMark : String? = null, isWatched: Boolean? = null,
+                     isError: Boolean = false) {
         var copy = uiState
         uiState = EditUiState(
             film = uiState.film,
             inputName = newName ?: uiState.inputName,
             inputAutor = newAutor ?: uiState.inputAutor,
             inputMark = newMark ?: uiState.inputMark,
+            inputUserMark = newUserMark ?: uiState.inputUserMark,
             inputUrl = newUrl ?: uiState.inputUrl,
             isAdding = uiState.isAdding,
-            isError = if(copy.isError) true else isError
+            isError = if(copy.isError) true else isError,
+            isWatched = isWatched ?: uiState.isWatched
         )
     }
 
@@ -58,7 +63,9 @@ class EditViewModel(private val filmRepository: FilmsRepository) : ViewModel() {
                 newName = uiState.inputName,
                 newAutor = uiState.inputAutor,
                 newMark = "%.1f".format(uiState.inputMark.replace(",", ".").toFloatOrNull() ?: 0f ).replace(",", ".").toFloat(),
-                newUrl = uiState.inputUrl))
+                newUrl = uiState.inputUrl,
+                newUserMark = if(uiState.isWatched) uiState.inputUserMark.replace(",",".").toFloat() else -1.0f
+                ))
         } else {
             filmRepository.insertFilm(Film(
                 name = uiState.inputName,
@@ -66,7 +73,9 @@ class EditViewModel(private val filmRepository: FilmsRepository) : ViewModel() {
                 mark = "%.1f".format(uiState.inputMark.replace(",", ".").toFloatOrNull() ?: 0f ).replace(",", ".").toFloat(),
                 url = uiState.inputUrl,
                 takeIt = true,
-                isCreated = true
+                isCreated = true,
+                isWatched = uiState.isWatched,
+                userMark = if(uiState.isWatched) uiState.inputUserMark.replace(",",".").toFloat() else -1.0f
             )
             )
         }
@@ -75,7 +84,8 @@ class EditViewModel(private val filmRepository: FilmsRepository) : ViewModel() {
 
     fun verificate() : Boolean {
         return uiState.inputName.isNotEmpty() && uiState.inputMark.isNotEmpty()
-                && uiState.inputAutor.isNotEmpty() && uiState.inputUrl.isNotEmpty()
+                && uiState.inputAutor.isNotEmpty() && uiState.inputUrl.isNotEmpty() &&
+                if(uiState.isWatched) uiState.inputUserMark.isNotEmpty() else true
     }
 }
 
@@ -86,5 +96,7 @@ class EditViewModel(private val filmRepository: FilmsRepository) : ViewModel() {
         val inputMark: String = "",
         val inputUrl : String = "",
         val isAdding : Boolean = false,
-        var isError : Boolean = false
+        val isError : Boolean = false,
+        val isWatched : Boolean = false,
+        val inputUserMark : String = ""
     )

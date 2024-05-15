@@ -68,6 +68,7 @@ class WheelViewModel(private val filmRepository: FilmsRepository) : ViewModel() 
              filmsInWheel = listOf(),
              activeButtons = true,
          )
+         saveData()
      }
 
     suspend fun reloadState(activeList : Boolean = false, sorting : (List<Film>) -> List<Film> = {it}) {
