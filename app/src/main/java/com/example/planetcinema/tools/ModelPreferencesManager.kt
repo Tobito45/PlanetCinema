@@ -1,4 +1,4 @@
-package com.example.planetcinema
+package com.example.planetcinema.tools
 
 import android.app.Application
 import android.content.Context

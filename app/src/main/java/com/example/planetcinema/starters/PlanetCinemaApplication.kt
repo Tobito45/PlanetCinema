@@ -1,6 +1,7 @@
-package com.example.planetcinema
+package com.example.planetcinema.starters
 
 import android.app.Application
+import com.example.planetcinema.tools.ModelPreferencesManager
 import com.example.planetcinema.data.AppContainer
 import com.example.planetcinema.data.AppDataContainer
 

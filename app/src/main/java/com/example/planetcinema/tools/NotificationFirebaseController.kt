@@ -1,4 +1,4 @@
-package com.example.planetcinema
+package com.example.planetcinema.tools
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import com.example.planetcinema.R
 import com.google.firebase.FirebaseApp
 
 class NotificationFirebaseController : ComponentActivity() {

@@ -1,4 +1,4 @@
-package com.example.planetcinema
+package com.example.planetcinema.starters
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

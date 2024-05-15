@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.planetcinema.data.Film
-import com.example.planetcinema.data.FilmsRepository
+import com.example.planetcinema.data.film.Film
+import com.example.planetcinema.data.film.FilmsRepository
 
 class EditViewModel(private val filmRepository: FilmsRepository) : ViewModel() {
     var uiState by mutableStateOf(EditUiState())
@@ -67,7 +67,8 @@ class EditViewModel(private val filmRepository: FilmsRepository) : ViewModel() {
                 newUserMark = if(uiState.isWatched) uiState.inputUserMark.replace(",",".").toFloat() else -1.0f
                 ))
         } else {
-            filmRepository.insertFilm(Film(
+            filmRepository.insertFilm(
+                Film(
                 name = uiState.inputName,
                 autor = uiState.inputAutor,
                 mark = "%.1f".format(uiState.inputMark.replace(",", ".").toFloatOrNull() ?: 0f ).replace(",", ".").toFloat(),

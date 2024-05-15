@@ -1,4 +1,4 @@
-package com.example.planetcinema
+package com.example.planetcinema.starters
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.planetcinema.R
 import com.example.planetcinema.layout.EditFilmCard
 import com.example.planetcinema.layout.Header
 import com.example.planetcinema.layout.NavBar
@@ -19,6 +20,7 @@ import com.example.planetcinema.layout.SquareBackgroundHeader
 import com.example.planetcinema.layout.SwappingCard
 import com.example.planetcinema.layout.UserListCard
 import com.example.planetcinema.layout.WheelCard
+import com.example.planetcinema.view.AppViewModelProvider
 import com.example.planetcinema.view.EditViewModel
 import com.example.planetcinema.view.FilterViewModel
 import com.example.planetcinema.view.SwapViewModel

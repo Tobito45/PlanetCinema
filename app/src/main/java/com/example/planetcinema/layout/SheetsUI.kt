@@ -44,7 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.planetcinema.R
-import com.example.planetcinema.data.Film
+import com.example.planetcinema.data.film.Film
 import com.example.planetcinema.view.FilterViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

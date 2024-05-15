@@ -1,14 +1,10 @@
-package com.example.planetcinema
+package com.example.planetcinema.view
 
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.planetcinema.view.EditViewModel
-import com.example.planetcinema.view.FilterViewModel
-import com.example.planetcinema.view.SwapViewModel
-import com.example.planetcinema.view.UserListViewModel
-import com.example.planetcinema.view.WheelViewModel
+import com.example.planetcinema.starters.PlanetCinemaApplication
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {

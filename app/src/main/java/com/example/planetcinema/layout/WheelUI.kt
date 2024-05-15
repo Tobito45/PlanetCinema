@@ -43,7 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.planetcinema.R
-import com.example.planetcinema.data.Film
+import com.example.planetcinema.data.film.Film
 import com.example.planetcinema.view.FilterViewModel
 import com.example.planetcinema.view.WheelViewModel
 import com.lyh.spintest.SpinWheelComponent

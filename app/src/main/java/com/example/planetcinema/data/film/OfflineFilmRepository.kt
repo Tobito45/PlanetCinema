@@ -1,8 +1,8 @@
-package com.example.planetcinema.data
+package com.example.planetcinema.data.film
 
 import kotlinx.coroutines.flow.Flow
 
-class OfflineFilmRepository(private val filmDao: FilmDao) : FilmsRepository  {
+class OfflineFilmRepository(private val filmDao: FilmDao) : FilmsRepository {
     override fun getAllFilmsStream(): Flow<List<Film>> = filmDao.getAllFilms()
     override fun getFilmStream(id: Int): Flow<Film?> = filmDao.getFilm(id)
     override fun getCheckedFilmsStream(): Flow<List<Film>> = filmDao.getAllCheckedFilms();

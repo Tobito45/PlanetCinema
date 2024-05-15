@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.planetcinema.data.Film
-import com.example.planetcinema.data.FilmsRepository
+import com.example.planetcinema.data.film.Film
+import com.example.planetcinema.data.film.FilmsRepository
 import com.example.planetcinema.data.firebase.FilmFirebaseRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

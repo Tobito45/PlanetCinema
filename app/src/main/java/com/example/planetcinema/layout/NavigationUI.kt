@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.planetcinema.PlaneCinemaScreen
+import com.example.planetcinema.starters.PlaneCinemaScreen
 import com.example.planetcinema.R
 
 val items = listOf(

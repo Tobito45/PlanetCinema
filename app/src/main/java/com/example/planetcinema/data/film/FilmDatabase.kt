@@ -1,4 +1,4 @@
-package com.example.planetcinema.data
+package com.example.planetcinema.data.film
 
 import android.content.Context
 import androidx.room.Database

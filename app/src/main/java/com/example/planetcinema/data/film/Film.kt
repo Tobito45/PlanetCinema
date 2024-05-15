@@ -1,4 +1,4 @@
-package com.example.planetcinema.data
+package com.example.planetcinema.data.film
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

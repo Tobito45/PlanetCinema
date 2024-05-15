@@ -1,7 +1,7 @@
 package com.example.planetcinema.data.firebase
 
 import android.util.Log
-import com.example.planetcinema.data.Film
+import com.example.planetcinema.data.film.Film
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference

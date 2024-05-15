@@ -1,6 +1,6 @@
 package com.example.planetcinema.data.firebase
 
-import com.example.planetcinema.data.Film
+import com.example.planetcinema.data.film.Film
 
 class OfflineFilmFirebaseRepository(private val dataBase: FirebaseDataBase) : FilmFirebaseRepository {
     init {

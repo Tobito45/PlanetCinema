@@ -40,9 +40,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.planetcinema.PlaneCinemaScreen
+import com.example.planetcinema.starters.PlaneCinemaScreen
 import com.example.planetcinema.R
-import com.example.planetcinema.data.Film
+import com.example.planetcinema.data.film.Film
 import com.example.planetcinema.view.FilterViewModel
 import com.example.planetcinema.view.UserListViewModel
 import kotlinx.coroutines.CoroutineScope

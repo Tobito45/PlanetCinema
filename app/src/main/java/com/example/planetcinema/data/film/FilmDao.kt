@@ -1,4 +1,4 @@
-package com.example.planetcinema.data
+package com.example.planetcinema.data.film
 
 import androidx.room.Dao
 import androidx.room.Delete
