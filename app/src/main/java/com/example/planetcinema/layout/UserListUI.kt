@@ -102,7 +102,7 @@ private fun UserListScrollPortrait(
             modifier =
             Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.1f)
+                .fillMaxHeight(0.12f)
         )
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,

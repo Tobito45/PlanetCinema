@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import com.example.planetcinema.R
 import com.example.planetcinema.ui.theme.RedSquareColor
 import com.example.planetcinema.ui.theme.SquareBackGroundColor
-import com.example.planetcinema.ui.theme.StarColor
 
 @Composable
 fun Header(panelName : String, onIconClick: () -> Unit) {
@@ -113,7 +112,7 @@ private fun RotatedSquareBackground(orientation : Int) {
 
             rotate(rotating) {
                 drawRoundRect(
-                    color = StarColor,
+                    color = RedSquareColor,
                     topLeft = Offset(startX, startY),
                     size = Size(squareSize, squareSize),
                     cornerRadius = CornerRadius(24.dp.toPx())
