@@ -158,11 +158,11 @@ fun FilterSheet (viewModel: FilterViewModel,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterUserListSheet(viewModel: FilterViewModel,
-                        sheetState: SheetState,
-                        scope: CoroutineScope,
-                        rangeSliderState : RangeSliderState,
-                        onCloseButton: () -> Unit = {}
+fun FilterUserListAndWheelSheet(viewModel: FilterViewModel,
+                                sheetState: SheetState,
+                                scope: CoroutineScope,
+                                rangeSliderState : RangeSliderState,
+                                onCloseButton: () -> Unit = {}
 )  {
     if(viewModel.uiState.showBottomSheet) {
         FilterSheet(
@@ -173,10 +173,18 @@ fun FilterUserListSheet(viewModel: FilterViewModel,
             onCloseButton = onCloseButton
         ) {
             BasicSheetCard {
-                BasicSheetText(text = stringResource(R.string.sort_films_by_watched), modifier = Modifier.fillMaxSize(0.5f))
+                BasicSheetText(stringResource(R.string.only_watched_films), modifier = Modifier.fillMaxSize(0.5f))
                 Checkbox(
                     checked = viewModel.uiState.isWatchedFilms,
-                    onCheckedChange = { viewModel.resetUiState(isWatchedFilms = it) },
+                    onCheckedChange = { viewModel.resetUiState(isWatchedFilms = it, onlyNonWatchedFilms = false) },
+                    modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
+                )
+            }
+            BasicSheetCard {
+                BasicSheetText(stringResource(R.string.only_non_watched_films), modifier = Modifier.fillMaxSize(0.5f))
+                Checkbox(
+                    checked = viewModel.uiState.onlyNonWatchedFilms,
+                    onCheckedChange = { viewModel.resetUiState(onlyNonWatchedFilms = it, isWatchedFilms = false) },
                     modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
                 )
             }

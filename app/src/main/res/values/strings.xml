@@ -35,4 +35,6 @@
     <string name="select_a_movie">Select a movie</string>
     <string name="all_movies">All movies</string>
     <string name="did_you_see_that_film">Did you see that film?</string>
+    <string name="only_watched_films">Only watched films</string>
+    <string name="only_non_watched_films">Only non watched films</string>
 </resources>

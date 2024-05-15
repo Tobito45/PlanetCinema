@@ -153,7 +153,7 @@ private fun UserListScrollPortrait(
         }
     }
     if (viewFilterModel.uiState.showBottomSheet) {
-        FilterUserListSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
+        FilterUserListAndWheelSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
                     onCloseButton = {
                         scope.launch {
                         viewUserModel.getAllFilm(viewFilterModel::filmsFilter)
@@ -293,7 +293,7 @@ private fun UserListScrollLandscape(
         }
     }
 
-    FilterUserListSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
+    FilterUserListAndWheelSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
         onCloseButton = {
             scope.launch {
                 viewUserModel.getAllFilm(viewFilterModel::filmsFilter)

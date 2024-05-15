@@ -26,8 +26,12 @@ class FilterViewModel() : ViewModel() {
             sortedList = sortedList.sortedWith(compareBy<Film> { it.name }.thenBy { it.autor })
         }
 
-        if(uiState.isWatchedFilms && uiState.isWatchedFilms) {
+        if(uiState.isWatchedFilms) {
             sortedList = sortedList.filter { it.isWatched }
+        }
+
+        if(uiState.onlyNonWatchedFilms) {
+            sortedList = sortedList.filter { !it.isWatched }
         }
 
         if(uiState.filmContainsWord.isNotEmpty() && uiState.filmContainsWord.isNotBlank()) {
@@ -47,6 +51,8 @@ class FilterViewModel() : ViewModel() {
         isAbcAutorSorted: Boolean? = null,
         isAbcFilmSorted: Boolean? = null,
         isWatchedFilms: Boolean? = null,
+        onlyWatchedFilms: Boolean? = null,
+        onlyNonWatchedFilms: Boolean? = null,
         autorContainsWord: String? = null,
         filmContainsWord: String? = null,
         filmRange: ClosedFloatingPointRange<Float>? = null) {
@@ -56,6 +62,7 @@ class FilterViewModel() : ViewModel() {
             isAbcFilmSorted = isAbcFilmSorted ?: copy.isAbcFilmSorted,
             isAbcAutorSorted = isAbcAutorSorted ?: copy.isAbcAutorSorted,
             isWatchedFilms = isWatchedFilms ?: copy.isWatchedFilms,
+            onlyNonWatchedFilms = onlyNonWatchedFilms ?: copy.onlyNonWatchedFilms,
             filmContainsWord = filmContainsWord ?: copy.filmContainsWord,
             autorContainsWord = autorContainsWord ?: copy.autorContainsWord,
             filmRange = filmRange ?: copy.filmRange
@@ -72,6 +79,7 @@ data class FilterUiState(
     val isAbcFilmSorted : Boolean = false,
     val isAbcAutorSorted : Boolean = false,
     val isWatchedFilms: Boolean = false,
+    val onlyNonWatchedFilms: Boolean = false,
     val filmContainsWord : String = "",
     val autorContainsWord : String = "",
     val filmRange : ClosedFloatingPointRange<Float> = 0.0f..10.0f,

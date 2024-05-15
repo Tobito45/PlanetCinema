@@ -147,7 +147,7 @@ private fun WheelCardPortarait(
             onCloseButton = {scope.launch { viewWheelModel.reloadState(false, viewFilterModel::filmsFilter) }})
     }
     if (viewFilterModel.uiState.showBottomSheet) {
-        FilterSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
+        FilterUserListAndWheelSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
             onCloseButton = {scope.launch { viewWheelModel.reloadState(false, viewFilterModel::filmsFilter)}})
     }
 }
@@ -216,7 +216,7 @@ private fun WheelCardLandScape(
     }
 
     if (viewFilterModel.uiState.showBottomSheet) {
-        FilterSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
+        FilterUserListAndWheelSheet(viewModel = viewFilterModel, sheetState = sheetState, scope = scope, rangeSliderState = rangeSliderState,
             onCloseButton = {scope.launch { viewWheelModel.reloadState(false, viewFilterModel::filmsFilter)}})
     }
 }
